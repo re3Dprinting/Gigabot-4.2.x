@@ -10732,7 +10732,7 @@ inline void gcode_M502() {
 	   
 	   COPY(resume_position, current_position);
 	   
-	   stepper.synchronize();
+	   planner.synchronize();
 	   
 	   const float retract1 = -3;
 	   // Initial retract before move to filament change position
