@@ -51,10 +51,8 @@
 
 #if HOTENDS == 1
   #define HOTEND_INDEX  0
-  #define EXTRUDER_IDX  0
 #else
   #define HOTEND_INDEX  e
-  #define EXTRUDER_IDX  active_extruder
 #endif
 
 /**
@@ -106,7 +104,7 @@ enum ADCSensorState : char {
 // get all oversampled sensor readings
 #define MIN_ADC_ISR_LOOPS 10
 
-#define ACTUAL_ADC_SAMPLES max(int(MIN_ADC_ISR_LOOPS), int(SensorsReady))
+#define ACTUAL_ADC_SAMPLES MAX(int(MIN_ADC_ISR_LOOPS), int(SensorsReady))
 
 #if HAS_PID_HEATING
   #define PID_K2 (1.0-PID_K1)
@@ -304,6 +302,10 @@ class Temperature {
       static uint8_t ADCKey_count;
     #endif
 
+    #if ENABLED(PID_EXTRUSION_SCALING)
+      static int16_t lpq_len;
+    #endif
+
     /**
      * Instance Methods
      */
@@ -445,7 +447,7 @@ class Temperature {
         #endif
         target_temperature_bed =
           #ifdef BED_MAXTEMP
-            min(celsius, BED_MAXTEMP)
+            MIN(celsius, BED_MAXTEMP)
           #else
             celsius
           #endif
@@ -468,7 +470,7 @@ class Temperature {
     #endif
 
     FORCE_INLINE static bool wait_for_heating(const uint8_t e) {
-      return degTargetHotend(e) > TEMP_HYSTERESIS && abs(degHotend(e) - degTargetHotend(e)) > TEMP_HYSTERESIS;
+      return degTargetHotend(e) > TEMP_HYSTERESIS && ABS(degHotend(e) - degTargetHotend(e)) > TEMP_HYSTERESIS;
     }
 
     /**
@@ -503,7 +505,7 @@ class Temperature {
     #if ENABLED(BABYSTEPPING)
 
       static void babystep_axis(const AxisEnum axis, const int16_t distance) {
-        if (axis_known_position[axis]) {
+        if (TEST(axis_known_position, axis)) {
           #if IS_CORE
             #if ENABLED(BABYSTEP_XY)
               switch (axis) {

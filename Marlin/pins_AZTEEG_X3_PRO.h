@@ -24,15 +24,26 @@
  * AZTEEG_X3_PRO (Arduino Mega) pin assignments
  */
 
+#ifndef __AVR_ATmega2560__
+  #error "Oops! Make sure you have 'Arduino Mega 2560' selected from the 'Tools -> Boards' menu."
+#endif
+
 #if HOTENDS > 5 || E_STEPPERS > 5
   #error "Azteeg X3 Pro supports up to 5 hotends / E-steppers. Comment out this line to continue."
 #endif
 
+#define BOARD_NAME "Azteeg X3 Pro"
+
+//
+// RAMPS pins overrides
+//
 #if ENABLED(CASE_LIGHT_ENABLE) && !PIN_EXISTS(CASE_LIGHT)
-  #define CASE_LIGHT_PIN 44     // Define before RAMPS pins include
+  #define CASE_LIGHT_PIN   44
 #endif
 
-#define BOARD_NAME "Azteeg X3 Pro"
+#ifndef FAN_PIN
+  #define FAN_PIN           6
+#endif
 
 #include "pins_RAMPS.h"
 
@@ -118,9 +129,6 @@
 #define HEATER_5_PIN        5
 #define HEATER_6_PIN        6
 #define HEATER_7_PIN       11
-
-#undef FAN_PIN
-#define FAN_PIN             6   // Part Cooling System
 
 #ifndef CONTROLLER_FAN_PIN
   #define CONTROLLER_FAN_PIN 4   // Pin used for the fan to cool motherboard (-1 to disable)

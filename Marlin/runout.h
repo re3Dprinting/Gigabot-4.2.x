@@ -55,7 +55,7 @@ class FilamentRunoutSensor {
         else {
 			enqueue_and_echo_commands_P(PSTR("M600"));
 		}
-        stepper.synchronize();
+        planner.synchronize();
       }
     }
 	FORCE_INLINE static void setscript(uint8_t i){

@@ -31,6 +31,8 @@
 #include "planner.h"
 #include "language.h"
 #include "printcounter.h"
+#include "delay.h"
+#include "endstops.h"
 
 #if ENABLED(HEATER_0_USES_MAX6675)
   #include "MarlinSPI.h"
@@ -38,10 +40,6 @@
 
 #if ENABLED(BABYSTEPPING)
   #include "stepper.h"
-#endif
-
-#if ENABLED(ENDSTOP_INTERRUPTS_FEATURE)
-  #include "endstops.h"
 #endif
 
 #if ENABLED(USE_WATCHDOG)
@@ -52,12 +50,14 @@
   #include "emergency_parser.h"
 #endif
 
-#if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
-  static void* heater_ttbl_map[2] = { (void*)HEATER_0_TEMPTABLE, (void*)HEATER_1_TEMPTABLE };
-  static uint8_t heater_ttbllen_map[2] = { HEATER_0_TEMPTABLE_LEN, HEATER_1_TEMPTABLE_LEN };
-#else
-  static void* heater_ttbl_map[HOTENDS] = ARRAY_BY_HOTENDS((void*)HEATER_0_TEMPTABLE, (void*)HEATER_1_TEMPTABLE, (void*)HEATER_2_TEMPTABLE, (void*)HEATER_3_TEMPTABLE, (void*)HEATER_4_TEMPTABLE);
-  static uint8_t heater_ttbllen_map[HOTENDS] = ARRAY_BY_HOTENDS(HEATER_0_TEMPTABLE_LEN, HEATER_1_TEMPTABLE_LEN, HEATER_2_TEMPTABLE_LEN, HEATER_3_TEMPTABLE_LEN, HEATER_4_TEMPTABLE_LEN);
+#if HOTEND_USES_THERMISTOR
+  #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
+    static void* heater_ttbl_map[2] = { (void*)HEATER_0_TEMPTABLE, (void*)HEATER_1_TEMPTABLE };
+    static constexpr uint8_t heater_ttbllen_map[2] = { HEATER_0_TEMPTABLE_LEN, HEATER_1_TEMPTABLE_LEN };
+  #else
+    static void* heater_ttbl_map[HOTENDS] = ARRAY_BY_HOTENDS((void*)HEATER_0_TEMPTABLE, (void*)HEATER_1_TEMPTABLE, (void*)HEATER_2_TEMPTABLE, (void*)HEATER_3_TEMPTABLE, (void*)HEATER_4_TEMPTABLE);
+    static constexpr uint8_t heater_ttbllen_map[HOTENDS] = ARRAY_BY_HOTENDS(HEATER_0_TEMPTABLE_LEN, HEATER_1_TEMPTABLE_LEN, HEATER_2_TEMPTABLE_LEN, HEATER_3_TEMPTABLE_LEN, HEATER_4_TEMPTABLE_LEN);
+  #endif
 #endif
 
 Temperature thermalManager;
@@ -233,6 +233,10 @@ uint8_t Temperature::soft_pwm_amount[HOTENDS];
 #if ENABLED(ADC_KEYPAD)
   uint32_t Temperature::current_ADCKey_raw = 0;
   uint8_t Temperature::ADCKey_count = 0;
+#endif
+
+#if ENABLED(PID_EXTRUSION_SCALING)
+  int16_t Temperature::lpq_len; // Initialized in configuration_store
 #endif
 
 #if HAS_PID_HEATING
@@ -664,14 +668,14 @@ float Temperature::get_pid_output(const int8_t e) {
         #if ENABLED(PID_EXTRUSION_SCALING)
           cTerm[HOTEND_INDEX] = 0;
           if (_HOTEND_TEST) {
-            long e_position = stepper.position(E_AXIS);
+            const long e_position = stepper.position(E_AXIS);
             if (e_position > last_e_position) {
               lpq[lpq_ptr] = e_position - last_e_position;
               last_e_position = e_position;
             }
-            else {
+            else
               lpq[lpq_ptr] = 0;
-            }
+
             if (++lpq_ptr >= lpq_len) lpq_ptr = 0;
             cTerm[HOTEND_INDEX] = (lpq[lpq_ptr] * planner.steps_to_mm[E_AXIS]) * PID_PARAM(Kc, HOTEND_INDEX);
             pid_output += cTerm[HOTEND_INDEX];
@@ -785,8 +789,8 @@ void Temperature::manage_heater() {
   updateTemperaturesFromRawValues(); // also resets the watchdog
 
   #if ENABLED(HEATER_0_USES_MAX6675)
-    if (current_temperature[0] > min(HEATER_0_MAXTEMP, MAX6675_TMAX - 1.0)) max_temp_error(0);
-    if (current_temperature[0] < max(HEATER_0_MINTEMP, MAX6675_TMIN + .01)) min_temp_error(0);
+    if (current_temperature[0] > MIN(HEATER_0_MAXTEMP, MAX6675_TMAX - 1.0)) max_temp_error(0);
+    if (current_temperature[0] < MAX(HEATER_0_MINTEMP, MAX6675_TMIN + .01)) min_temp_error(0);
   #endif
 
   #if WATCH_HOTENDS || WATCH_THE_BED || DISABLED(PIDTEMPBED) || HAS_AUTO_FAN || HEATER_IDLE_HANDLER
@@ -819,7 +823,7 @@ void Temperature::manage_heater() {
 
     #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
       // Make sure measured temperatures are close together
-      if (FABS(current_temperature[0] - redundant_temperature) > MAX_REDUNDANT_TEMP_SENSOR_DIFF)
+      if (ABS(current_temperature[0] - redundant_temperature) > MAX_REDUNDANT_TEMP_SENSOR_DIFF)
         _temp_error(0, PSTR(MSG_REDUNDANCY), PSTR(MSG_ERR_REDUNDANT_TEMP));
     #endif
 
@@ -911,7 +915,29 @@ void Temperature::manage_heater() {
   #endif // HAS_HEATED_BED
 }
 
-#define PGM_RD_W(x)   (short)pgm_read_word(&x)
+#define TEMP_AD595(RAW)  ((RAW) * 5.0 * 100.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD595_GAIN) + TEMP_SENSOR_AD595_OFFSET)
+#define TEMP_AD8495(RAW) ((RAW) * 6.6 * 100.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD8495_GAIN) + TEMP_SENSOR_AD8495_OFFSET)
+
+/**
+ * Bisect search for the range of the 'raw' value, then interpolate
+ * proportionally between the under and over values.
+ */
+#define SCAN_THERMISTOR_TABLE(TBL,LEN) do{                             \
+  uint8_t l = 0, r = LEN, m;                                           \
+  for (;;) {                                                           \
+    m = (l + r) >> 1;                                                  \
+    if (m == l || m == r) return (short)pgm_read_word(&TBL[LEN-1][1]); \
+    short v00 = pgm_read_word(&TBL[m-1][0]),                           \
+          v10 = pgm_read_word(&TBL[m-0][0]);                           \
+         if (raw < v00) r = m;                                         \
+    else if (raw > v10) l = m;                                         \
+    else {                                                             \
+      const short v01 = (short)pgm_read_word(&TBL[m-1][1]),            \
+                  v11 = (short)pgm_read_word(&TBL[m-0][1]);            \
+      return v01 + (raw - v00) * float(v11 - v01) / float(v10 - v00);  \
+    }                                                                  \
+  }                                                                    \
+}while(0)
 
 // Derived from RepRap FiveD extruder::getTemperature()
 // For hot end temperature measurement.
@@ -929,35 +955,59 @@ float Temperature::analog2temp(const int raw, const uint8_t e) {
       return 0.0;
     }
 
-  #if ENABLED(HEATER_0_USES_MAX6675)
-    if (e == 0) return 0.25 * raw;
-  #endif
-
-  // Thermistor with conversion table?
-  if (heater_ttbl_map[e] != NULL) {
-    short(*tt)[][2] = (short(*)[][2])(heater_ttbl_map[e]);
-    for (uint8_t i = 1; i < heater_ttbllen_map[e]; i++) {
-      const short entry10 = PGM_RD_W((*tt)[i][0]);
-      if (entry10 > raw) {
-        const short entry00 = PGM_RD_W((*tt)[i - 1][0]),
-                    entry01 = PGM_RD_W((*tt)[i - 1][1]),
-                    entry11 = PGM_RD_W((*tt)[i][1]);
-        return entry01 + (raw - entry00) * float(entry11 - entry01) / float(entry10 - entry00);
-      }
-    }
-    return PGM_RD_W((*tt)[heater_ttbllen_map[e] - 1][1]); // Overflow: Return last value in the table
+  switch (e) {
+    case 0:
+      #if ENABLED(HEATER_0_USES_MAX6675)
+        return raw * 0.25;
+      #elif ENABLED(HEATER_0_USES_AD595)
+        return TEMP_AD595(raw);
+      #elif ENABLED(HEATER_0_USES_AD8495)
+        return TEMP_AD8495(raw);
+      #else
+        break;
+      #endif
+    case 1:
+      #if ENABLED(HEATER_1_USES_AD595)
+        return TEMP_AD595(raw);
+      #elif ENABLED(HEATER_1_USES_AD8495)
+        return TEMP_AD8495(raw);
+      #else
+        break;
+      #endif
+    case 2:
+      #if ENABLED(HEATER_2_USES_AD595)
+        return TEMP_AD595(raw);
+      #elif ENABLED(HEATER_2_USES_AD8495)
+        return TEMP_AD8495(raw);
+      #else
+        break;
+      #endif
+    case 3:
+      #if ENABLED(HEATER_3_USES_AD595)
+        return TEMP_AD595(raw);
+      #elif ENABLED(HEATER_3_USES_AD8495)
+        return TEMP_AD8495(raw);
+      #else
+        break;
+      #endif
+    case 4:
+      #if ENABLED(HEATER_4_USES_AD595)
+        return TEMP_AD595(raw);
+      #elif ENABLED(HEATER_4_USES_AD8495)
+        return TEMP_AD8495(raw);
+      #else
+        break;
+      #endif
+    default: break;
   }
 
-  // Thermocouple with amplifier ADC interface
-  return (raw *
-    #if HEATER_USES_AD8495
-      660.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD8495_GAIN) + TEMP_SENSOR_AD8495_OFFSET
-    #elif HEATER_USES_AD595
-      5.0 * 100.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD595_GAIN) + TEMP_SENSOR_AD595_OFFSET
-    #else
-      0
-    #endif
-  );
+  #if HOTEND_USES_THERMISTOR
+    // Thermistor with conversion table?
+    const short(*tt)[][2] = (short(*)[][2])(heater_ttbl_map[e]);
+    SCAN_THERMISTOR_TABLE((*tt), heater_ttbllen_map[e]);
+  #endif
+
+  return 0;
 }
 
 #undef  SYSTEM_SECTION
@@ -971,20 +1021,12 @@ float Temperature::analog2temp(const int raw, const uint8_t e) {
   // Derived from RepRap FiveD extruder::getTemperature()
   // For bed temperature measurement.
   float Temperature::analog2tempBed(const int raw) {
-    #if ENABLED(BED_USES_THERMISTOR)
-
-      // Thermistor with conversion table
-      for (uint8_t i = 1; i < BEDTEMPTABLE_LEN; i++) {
-        const short entry10 = PGM_RD_W(BEDTEMPTABLE[i][0]);
-        if (entry10 > raw) {
-          const short entry00 = PGM_RD_W(BEDTEMPTABLE[i - 1][0]),
-                      entry01 = PGM_RD_W(BEDTEMPTABLE[i - 1][1]),
-                      entry11 = PGM_RD_W(BEDTEMPTABLE[i][1]);
-          return entry01 + (raw - entry00) * float(entry11 - entry01) / float(entry10 - entry00);
-        }
-      }
-      return PGM_RD_W(BEDTEMPTABLE[BEDTEMPTABLE_LEN - 1][1]); // Overflow: Return last value in the table
-
+    #if ENABLED(HEATER_BED_USES_THERMISTOR)
+      SCAN_THERMISTOR_TABLE(BEDTEMPTABLE, BEDTEMPTABLE_LEN);
+    #elif ENABLED(HEATER_BED_USES_AD595)
+      return TEMP_AD595(raw);
+    #elif ENABLED(HEATER_BED_USES_AD8495)
+      return TEMP_AD8495(raw);
     #else
 
       // Thermocouple with amplifier ADC interface
@@ -1001,7 +1043,6 @@ float Temperature::analog2temp(const int raw, const uint8_t e) {
           0
         #endif
       );
-
     #endif
   }
 #endif // HAS_HEATED_BED
@@ -1010,33 +1051,14 @@ float Temperature::analog2temp(const int raw, const uint8_t e) {
   // Derived from RepRap FiveD extruder::getTemperature()
   // For chamber temperature measurement.
   float Temperature::analog2tempChamber(const int raw) {
-    #if ENABLED(CHAMBER_USES_THERMISTOR)
-
-      // Thermistor with conversion table
-      for (uint8_t i = 1; i < CHAMBERTEMPTABLE_LEN; i++) {
-        const short entry10 = PGM_RD_W(CHAMBERTEMPTABLE[i][0]);
-        if (entry10 > raw) {
-          const short entry00 = PGM_RD_W(CHAMBERTEMPTABLE[i - 1][0]),
-                      entry01 = PGM_RD_W(CHAMBERTEMPTABLE[i - 1][1]),
-                      entry11 = PGM_RD_W(CHAMBERTEMPTABLE[i][1]);
-          return entry01 + (raw - entry00) * float(entry11 - entry01) / float(entry10 - entry00);
-        }
-      }
-      return PGM_RD_W(CHAMBERTEMPTABLE[CHAMBERTEMPTABLE_LEN - 1][1]); // Overflow: Return last value in the table
-
+    #if ENABLED(HEATER_CHAMBER_USES_THERMISTOR)
+      SCAN_THERMISTOR_TABLE(CHAMBERTEMPTABLE, CHAMBERTEMPTABLE_LEN);
+    #elif ENABLED(HEATER_CHAMBER_USES_AD595)
+      return TEMP_AD595(raw);
+    #elif ENABLED(HEATER_CHAMBER_USES_AD8495)
+      return TEMP_AD8495(raw);
     #else
-
-      // Thermocouple with amplifier ADC interface
-      return (raw *
-        #if ENABLED(BED_USES_AD595)
-          5.0 * 100.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD595_GAIN) + TEMP_SENSOR_AD595_OFFSET
-        #elif ENABLED(BED_USES_AD8495)
-          660.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD8495_GAIN) + TEMP_SENSOR_AD8495_OFFSET
-        #else
-          0
-        #endif
-      );
-
+      return 0;
     #endif
   }
 #endif // HAS_TEMP_CHAMBER
@@ -1054,8 +1076,7 @@ void Temperature::updateTemperaturesFromRawValues() {
   #if ENABLED(HEATER_0_USES_MAX6675)
     current_temperature_raw[0] = read_max6675();
   #endif
-  HOTEND_LOOP()
-    current_temperature[e] = Temperature::analog2temp(current_temperature_raw[e], e);
+  HOTEND_LOOP() current_temperature[e] = Temperature::analog2temp(current_temperature_raw[e], e);
   #if HAS_HEATED_BED
     current_temperature_bed = Temperature::analog2tempBed(current_temperature_bed_raw);
   #endif
@@ -1074,9 +1095,7 @@ void Temperature::updateTemperaturesFromRawValues() {
     watchdog_reset();
   #endif
 
-  CRITICAL_SECTION_START;
   temp_meas_ready = false;
-  CRITICAL_SECTION_END;
 }
 
 
@@ -1096,7 +1115,7 @@ void Temperature::updateTemperaturesFromRawValues() {
    * a return value of 1.
    */
   int8_t Temperature::widthFil_to_size_ratio() {
-    if (FABS(filament_width_nominal - filament_width_meas) <= FILWIDTH_ERROR_MARGIN)
+    if (ABS(filament_width_nominal - filament_width_meas) <= FILWIDTH_ERROR_MARGIN)
       return int(100.0 * filament_width_nominal / filament_width_meas) - 100;
     return 0;
   }
@@ -1119,7 +1138,9 @@ void Temperature::updateTemperaturesFromRawValues() {
  */
 void Temperature::init() {
 
-  #if MB(RUMBA) && (TEMP_SENSOR_0 == -1 || TEMP_SENSOR_1 == -1 || TEMP_SENSOR_2 == -1 || TEMP_SENSOR_BED == -1 || TEMP_SENSOR_CHAMBER == -1)
+  #if MB(RUMBA) && ( \
+       ENABLED(HEATER_0_USES_AD595)  || ENABLED(HEATER_1_USES_AD595)  || ENABLED(HEATER_2_USES_AD595)  || ENABLED(HEATER_3_USES_AD595)  || ENABLED(HEATER_4_USES_AD595)  || ENABLED(HEATER_BED_USES_AD595)  || ENABLED(HEATER_CHAMBER_USES_AD595) \
+    || ENABLED(HEATER_0_USES_AD8495) || ENABLED(HEATER_1_USES_AD8495) || ENABLED(HEATER_2_USES_AD8495) || ENABLED(HEATER_3_USES_AD8495) || ENABLED(HEATER_4_USES_AD8495) || ENABLED(HEATER_BED_USES_AD8495) || ENABLED(HEATER_CHAMBER_USES_AD8495))
     // Disable RUMBA JTAG in case the thermocouple extension is plugged on top of JTAG connector
     MCUCR = _BV(JTD);
     MCUCR = _BV(JTD);
@@ -1185,42 +1206,35 @@ void Temperature::init() {
 
   #endif // HEATER_0_USES_MAX6675
 
-  #ifdef DIDR2
-    #define ANALOG_SELECT(pin) do{ if (pin < 8) SBI(DIDR0, pin); else SBI(DIDR2, pin & 0x07); }while(0)
-  #else
-    #define ANALOG_SELECT(pin) do{ SBI(DIDR0, pin); }while(0)
-  #endif
+  HAL_adc_init();
 
-  // Set analog inputs
-  ADCSRA = _BV(ADEN) | _BV(ADSC) | _BV(ADIF) | 0x07;
-  DIDR0 = 0;
-  #ifdef DIDR2
-    DIDR2 = 0;
-  #endif
   #if HAS_TEMP_ADC_0
-    ANALOG_SELECT(TEMP_0_PIN);
+    HAL_ANALOG_SELECT(TEMP_0_PIN);
   #endif
   #if HAS_TEMP_ADC_1
-    ANALOG_SELECT(TEMP_1_PIN);
+    HAL_ANALOG_SELECT(TEMP_1_PIN);
   #endif
   #if HAS_TEMP_ADC_2
-    ANALOG_SELECT(TEMP_2_PIN);
+    HAL_ANALOG_SELECT(TEMP_2_PIN);
   #endif
   #if HAS_TEMP_ADC_3
-    ANALOG_SELECT(TEMP_3_PIN);
+    HAL_ANALOG_SELECT(TEMP_3_PIN);
   #endif
   #if HAS_TEMP_ADC_4
-    ANALOG_SELECT(TEMP_4_PIN);
+    HAL_ANALOG_SELECT(TEMP_4_PIN);
   #endif
   #if HAS_HEATED_BED
-    ANALOG_SELECT(TEMP_BED_PIN);
+    HAL_ANALOG_SELECT(TEMP_BED_PIN);
   #endif
   #if HAS_TEMP_CHAMBER
-    ANALOG_SELECT(TEMP_CHAMBER_PIN);
+    HAL_ANALOG_SELECT(TEMP_CHAMBER_PIN);
   #endif
   #if ENABLED(FILAMENT_WIDTH_SENSOR)
-    ANALOG_SELECT(FILWIDTH_PIN);
+    HAL_ANALOG_SELECT(FILWIDTH_PIN);
   #endif
+
+  HAL_timer_start(TEMP_TIMER_NUM, TEMP_TIMER_FREQUENCY);
+  ENABLE_TEMPERATURE_INTERRUPT();
 
   #if HAS_AUTO_FAN_0
     #if E0_AUTO_FAN_PIN == FAN1_PIN
@@ -1282,11 +1296,6 @@ void Temperature::init() {
       SET_OUTPUT(CHAMBER_AUTO_FAN_PIN);
     #endif
   #endif
-
-  // Use timer0 for temperature measurement
-  // Interleave temperature interrupt with millies interrupt
-  OCR0B = 128;
-  ENABLE_TEMPERATURE_INTERRUPT();
 
   // Wait for temperature measurement to settle
   delay(250);
@@ -1632,7 +1641,7 @@ void Temperature::disable_all_heaters() {
 
     WRITE(MAX6675_SS, 0); // enable TT_MAX6675
 
-    DELAY_100NS;          // Ensure 100ns delay
+    DELAY_NS(100);       // Ensure 100ns delay
 
     // Read a big-endian temperature value
     max6675_temp = 0;
@@ -1716,71 +1725,71 @@ void Temperature::set_current_temp_raw() {
    *
    */
   void endstop_monitor() {
-    static uint16_t old_endstop_bits_local = 0;
+    static uint16_t old_live_state_local = 0;
     static uint8_t local_LED_status = 0;
-    uint16_t current_endstop_bits_local = 0;
+    uint16_t live_state_local = 0;
     #if HAS_X_MIN
-      if (READ(X_MIN_PIN)) SBI(current_endstop_bits_local, X_MIN);
+      if (READ(X_MIN_PIN)) SBI(live_state_local, X_MIN);
     #endif
     #if HAS_X_MAX
-      if (READ(X_MAX_PIN)) SBI(current_endstop_bits_local, X_MAX);
+      if (READ(X_MAX_PIN)) SBI(live_state_local, X_MAX);
     #endif
     #if HAS_Y_MIN
-      if (READ(Y_MIN_PIN)) SBI(current_endstop_bits_local, Y_MIN);
+      if (READ(Y_MIN_PIN)) SBI(live_state_local, Y_MIN);
     #endif
     #if HAS_Y_MAX
-      if (READ(Y_MAX_PIN)) SBI(current_endstop_bits_local, Y_MAX);
+      if (READ(Y_MAX_PIN)) SBI(live_state_local, Y_MAX);
     #endif
     #if HAS_Z_MIN
-      if (READ(Z_MIN_PIN)) SBI(current_endstop_bits_local, Z_MIN);
+      if (READ(Z_MIN_PIN)) SBI(live_state_local, Z_MIN);
     #endif
     #if HAS_Z_MAX
-      if (READ(Z_MAX_PIN)) SBI(current_endstop_bits_local, Z_MAX);
+      if (READ(Z_MAX_PIN)) SBI(live_state_local, Z_MAX);
     #endif
     #if HAS_Z_MIN_PROBE_PIN
-      if (READ(Z_MIN_PROBE_PIN)) SBI(current_endstop_bits_local, Z_MIN_PROBE);
+      if (READ(Z_MIN_PROBE_PIN)) SBI(live_state_local, Z_MIN_PROBE);
     #endif
     #if HAS_Z2_MIN
-      if (READ(Z2_MIN_PIN)) SBI(current_endstop_bits_local, Z2_MIN);
+      if (READ(Z2_MIN_PIN)) SBI(live_state_local, Z2_MIN);
     #endif
     #if HAS_Z2_MAX
-      if (READ(Z2_MAX_PIN)) SBI(current_endstop_bits_local, Z2_MAX);
+      if (READ(Z2_MAX_PIN)) SBI(live_state_local, Z2_MAX);
     #endif
 
-    uint16_t endstop_change = current_endstop_bits_local ^ old_endstop_bits_local;
+    uint16_t endstop_change = live_state_local ^ old_live_state_local;
 
     if (endstop_change) {
       #if HAS_X_MIN
-        if (TEST(endstop_change, X_MIN)) SERIAL_PROTOCOLPAIR("  X_MIN:", !!TEST(current_endstop_bits_local, X_MIN));
+        if (TEST(endstop_change, X_MIN)) SERIAL_PROTOCOLPAIR("  X_MIN:", !!TEST(live_state_local, X_MIN));
       #endif
       #if HAS_X_MAX
-        if (TEST(endstop_change, X_MAX)) SERIAL_PROTOCOLPAIR("  X_MAX:", !!TEST(current_endstop_bits_local, X_MAX));
+        if (TEST(endstop_change, X_MAX)) SERIAL_PROTOCOLPAIR("  X_MAX:", !!TEST(live_state_local, X_MAX));
       #endif
       #if HAS_Y_MIN
-        if (TEST(endstop_change, Y_MIN)) SERIAL_PROTOCOLPAIR("  Y_MIN:", !!TEST(current_endstop_bits_local, Y_MIN));
+        if (TEST(endstop_change, Y_MIN)) SERIAL_PROTOCOLPAIR("  Y_MIN:", !!TEST(live_state_local, Y_MIN));
       #endif
       #if HAS_Y_MAX
-        if (TEST(endstop_change, Y_MAX)) SERIAL_PROTOCOLPAIR("  Y_MAX:", !!TEST(current_endstop_bits_local, Y_MAX));
+        if (TEST(endstop_change, Y_MAX)) SERIAL_PROTOCOLPAIR("  Y_MAX:", !!TEST(live_state_local, Y_MAX));
       #endif
       #if HAS_Z_MIN
-        if (TEST(endstop_change, Z_MIN)) SERIAL_PROTOCOLPAIR("  Z_MIN:", !!TEST(current_endstop_bits_local, Z_MIN));
+        if (TEST(endstop_change, Z_MIN)) SERIAL_PROTOCOLPAIR("  Z_MIN:", !!TEST(live_state_local, Z_MIN));
       #endif
       #if HAS_Z_MAX
-        if (TEST(endstop_change, Z_MAX)) SERIAL_PROTOCOLPAIR("  Z_MAX:", !!TEST(current_endstop_bits_local, Z_MAX));
+        if (TEST(endstop_change, Z_MAX)) SERIAL_PROTOCOLPAIR("  Z_MAX:", !!TEST(live_state_local, Z_MAX));
       #endif
       #if HAS_Z_MIN_PROBE_PIN
-        if (TEST(endstop_change, Z_MIN_PROBE)) SERIAL_PROTOCOLPAIR("  PROBE:", !!TEST(current_endstop_bits_local, Z_MIN_PROBE));
+        if (TEST(endstop_change, Z_MIN_PROBE)) SERIAL_PROTOCOLPAIR("  PROBE:", !!TEST(live_state_local, Z_MIN_PROBE));
       #endif
       #if HAS_Z2_MIN
-        if (TEST(endstop_change, Z2_MIN)) SERIAL_PROTOCOLPAIR("  Z2_MIN:", !!TEST(current_endstop_bits_local, Z2_MIN));
+        if (TEST(endstop_change, Z2_MIN)) SERIAL_PROTOCOLPAIR("  Z2_MIN:", !!TEST(live_state_local, Z2_MIN));
       #endif
       #if HAS_Z2_MAX
-        if (TEST(endstop_change, Z2_MAX)) SERIAL_PROTOCOLPAIR("  Z2_MAX:", !!TEST(current_endstop_bits_local, Z2_MAX));
+        if (TEST(endstop_change, Z2_MAX)) SERIAL_PROTOCOLPAIR("  Z2_MAX:", !!TEST(live_state_local, Z2_MAX));
       #endif
       SERIAL_PROTOCOLPGM("\n\n");
       analogWrite(LED_PIN, local_LED_status);
       local_LED_status ^= 255;
-      old_endstop_bits_local = current_endstop_bits_local;
+      old_live_state_local = live_state_local;
     }
   }
 #endif // PINS_DEBUGGING
@@ -1798,24 +1807,14 @@ void Temperature::set_current_temp_raw() {
  *  - Step the babysteps value for each axis towards 0
  *  - For PINS_DEBUGGING, monitor and report endstop pins
  *  - For ENDSTOP_INTERRUPTS_FEATURE check endstops if flagged
+ *  - Call planner.tick to count down its "ignore" time
  */
-ISR(TIMER0_COMPB_vect) {
-  /**
-   * AVR has no hardware interrupt preemption, so emulate priorization
-   * and preemption of this ISR by all others by disabling the timer
-   * interrupt generation capability and reenabling global interrupts.
-   * Any interrupt can then interrupt this handler and preempt it.
-   * This ISR becomes the lowest priority one so the UART, Endstops
-   * and Stepper ISRs can all preempt it.
-   */
-  DISABLE_TEMPERATURE_INTERRUPT();
-  sei();
+HAL_TEMP_TIMER_ISR {
+  HAL_timer_isr_prologue(TEMP_TIMER_NUM);
 
   Temperature::isr();
 
-  // Disable global interrupts and reenable this ISR
-  cli();
-  ENABLE_TEMPERATURE_INTERRUPT();
+  HAL_timer_isr_epilogue(TEMP_TIMER_NUM);
 }
 
 void Temperature::isr() {
@@ -2113,13 +2112,6 @@ void Temperature::isr() {
    * This gives each ADC 0.9765ms to charge up.
    */
 
-  #define SET_ADMUX_ADCSRA(pin) ADMUX = _BV(REFS0) | (pin & 0x07); SBI(ADCSRA, ADSC)
-  #ifdef MUX5
-    #define START_ADC(pin) if (pin > 7) ADCSRB = _BV(MUX5); else ADCSRB = 0; SET_ADMUX_ADCSRA(pin)
-  #else
-    #define START_ADC(pin) ADCSRB = 0; SET_ADMUX_ADCSRA(pin)
-  #endif
-
   switch (adc_sensor_state) {
 
     case SensorsReady: {
@@ -2139,86 +2131,86 @@ void Temperature::isr() {
 
     #if HAS_TEMP_ADC_0
       case PrepareTemp_0:
-        START_ADC(TEMP_0_PIN);
+        HAL_START_ADC(TEMP_0_PIN);
         break;
       case MeasureTemp_0:
-        raw_temp_value[0] += ADC;
+        raw_temp_value[0] += HAL_READ_ADC;
         break;
     #endif
 
     #if HAS_HEATED_BED
       case PrepareTemp_BED:
-        START_ADC(TEMP_BED_PIN);
+        HAL_START_ADC(TEMP_BED_PIN);
         break;
       case MeasureTemp_BED:
-        raw_temp_bed_value += ADC;
+        raw_temp_bed_value += HAL_READ_ADC;
         break;
     #endif
 
     #if HAS_TEMP_CHAMBER
       case PrepareTemp_CHAMBER:
-        START_ADC(TEMP_CHAMBER_PIN);
+        HAL_START_ADC(TEMP_CHAMBER_PIN);
         break;
       case MeasureTemp_CHAMBER:
-        raw_temp_chamber_value += ADC;
+        raw_temp_chamber_value += HAL_READ_ADC;
         break;
     #endif
 
     #if HAS_TEMP_ADC_1
       case PrepareTemp_1:
-        START_ADC(TEMP_1_PIN);
+        HAL_START_ADC(TEMP_1_PIN);
         break;
       case MeasureTemp_1:
-        raw_temp_value[1] += ADC;
+        raw_temp_value[1] += HAL_READ_ADC;
         break;
     #endif
 
     #if HAS_TEMP_ADC_2
       case PrepareTemp_2:
-        START_ADC(TEMP_2_PIN);
+        HAL_START_ADC(TEMP_2_PIN);
         break;
       case MeasureTemp_2:
-        raw_temp_value[2] += ADC;
+        raw_temp_value[2] += HAL_READ_ADC;
         break;
     #endif
 
     #if HAS_TEMP_ADC_3
       case PrepareTemp_3:
-        START_ADC(TEMP_3_PIN);
+        HAL_START_ADC(TEMP_3_PIN);
         break;
       case MeasureTemp_3:
-        raw_temp_value[3] += ADC;
+        raw_temp_value[3] += HAL_READ_ADC;
         break;
     #endif
 
     #if HAS_TEMP_ADC_4
       case PrepareTemp_4:
-        START_ADC(TEMP_4_PIN);
+        HAL_START_ADC(TEMP_4_PIN);
         break;
       case MeasureTemp_4:
-        raw_temp_value[4] += ADC;
+        raw_temp_value[4] += HAL_READ_ADC;
         break;
     #endif
 
     #if ENABLED(FILAMENT_WIDTH_SENSOR)
       case Prepare_FILWIDTH:
-        START_ADC(FILWIDTH_PIN);
+        HAL_START_ADC(FILWIDTH_PIN);
       break;
       case Measure_FILWIDTH:
-        if (ADC > 102) { // Make sure ADC is reading > 0.5 volts, otherwise don't read.
+        if (HAL_READ_ADC > 102) { // Make sure ADC is reading > 0.5 volts, otherwise don't read.
           raw_filwidth_value -= (raw_filwidth_value >> 7); // Subtract 1/128th of the raw_filwidth_value
-          raw_filwidth_value += ((unsigned long)ADC << 7); // Add new ADC reading, scaled by 128
+          raw_filwidth_value += ((unsigned long)HAL_READ_ADC << 7); // Add new ADC reading, scaled by 128
         }
       break;
     #endif
 
     #if ENABLED(ADC_KEYPAD)
       case Prepare_ADC_KEY:
-        START_ADC(ADC_KEYPAD_PIN);
+        HAL_START_ADC(ADC_KEYPAD_PIN);
         break;
       case Measure_ADC_KEY:
         if (ADCKey_count < 16) {
-          raw_ADCKey_value = ADC;
+          raw_ADCKey_value = HAL_READ_ADC;
           if (raw_ADCKey_value > 900) {
             //ADC Key release
             ADCKey_count = 0;
@@ -2336,26 +2328,11 @@ void Temperature::isr() {
     }
   #endif // BABYSTEPPING
 
-  #if ENABLED(PINS_DEBUGGING)
-    extern bool endstop_monitor_flag;
-    // run the endstop monitor at 15Hz
-    static uint8_t endstop_monitor_count = 16;  // offset this check from the others
-    if (endstop_monitor_flag) {
-      endstop_monitor_count += _BV(1);  //  15 Hz
-      endstop_monitor_count &= 0x7F;
-      if (!endstop_monitor_count) endstop_monitor();  // report changes in endstop status
-    }
-  #endif
+  // Poll endstops state, if required
+  endstops.poll();
 
-  #if ENABLED(ENDSTOP_INTERRUPTS_FEATURE)
-
-    extern volatile uint8_t e_hit;
-
-    if (e_hit && ENDSTOPS_ENABLED) {
-      endstops.update();  // call endstop update routine
-      e_hit--;
-    }
-  #endif
+  // Periodically call the planner timer
+  planner.tick();
 }
 
 #if HAS_TEMP_SENSOR

@@ -28,10 +28,9 @@
 /**
  * Axis indices as enumerated constants
  *
- * Special axis:
- *  - A_AXIS and B_AXIS are used by COREXY printers
- *  - X_HEAD and Y_HEAD is used for systems that don't have a 1:1 relationship
- *    between X_AXIS and X Head movement, like CoreXY bots
+ *  - X_AXIS, Y_AXIS, and Z_AXIS should be used for axes in Cartesian space
+ *  - A_AXIS, B_AXIS, and C_AXIS should be used for Steppers, corresponding to XYZ on Cartesians
+ *  - X_HEAD, Y_HEAD, and Z_HEAD should be used for Steppers on Core kinematics
  */
 enum AxisEnum : unsigned char {
   X_AXIS    = 0,
@@ -86,22 +85,6 @@ enum DebugFlags : unsigned char {
   DEBUG_LEVELING      = _BV(5), ///< Print detailed output for homing and leveling
   DEBUG_MESH_ADJUST   = _BV(6), ///< UBL bed leveling
   DEBUG_ALL           = 0xFF
-};
-
-enum EndstopEnum : char {
-  X_MIN,
-  Y_MIN,
-  Z_MIN,
-  Z_MIN_PROBE,
-  X_MAX,
-  Y_MAX,
-  Z_MAX,
-  X2_MIN,
-  X2_MAX,
-  Y2_MIN,
-  Y2_MAX,
-  Z2_MIN,
-  Z2_MAX
 };
 
 #if ENABLED(ADVANCED_PAUSE_FEATURE)

@@ -87,7 +87,7 @@
   #define BUTTON_EXISTS(BN) (defined(BTN_## BN) && BTN_## BN >= 0)
   #define BUTTON_PRESSED(BN) !READ(BTN_## BN)
 
-  #if ENABLED(ULTIPANEL)
+  #if ENABLED(ULTIPANEL) // LCD with a click-wheel input
 
     extern bool defer_return_to_status;
 
@@ -111,27 +111,6 @@
 
     void lcd_goto_screen(screenFunc_t screen, const uint32_t encoder=0);
 
-    // Encoder click is directly connected
-
-    #define BLEN_A 0
-    #define BLEN_B 1
-
-    #define EN_A (_BV(BLEN_A))
-    #define EN_B (_BV(BLEN_B))
-
-    #if BUTTON_EXISTS(ENC)
-      #define BLEN_C 2
-      #define EN_C (_BV(BLEN_C))
-    #endif
-
-    #if BUTTON_EXISTS(BACK)
-      #define BLEN_D 3
-      #define EN_D _BV(BLEN_D)
-      #define LCD_BACK_CLICKED (buttons & EN_D)
-    #endif
-
-    extern volatile uint8_t buttons;  // The last-checked buttons in a bit array.
-    void lcd_buttons_update();
     void lcd_completion_feedback(const bool good=true);
 
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
@@ -139,7 +118,7 @@
       void lcd_advanced_pause_show_message(const AdvancedPauseMessage message,
                                            const AdvancedPauseMode mode=ADVANCED_PAUSE_MODE_PAUSE_PRINT,
                                            const uint8_t extruder=active_extruder);
-    #endif // ADVANCED_PAUSE_FEATURE
+    #endif
 
     #if ENABLED(G26_MESH_VALIDATION)
       void lcd_chirp();
@@ -151,10 +130,6 @@
       void lcd_z_offset_edit_setup(const float &initial);
       float lcd_z_offset_edit();
     #endif
-
-  #else
-
-    inline void lcd_buttons_update() {}
 
   #endif
 
@@ -203,12 +178,6 @@
     #define REPRAPWORLD_KEYPAD_MOVE_HOME    (buttons_reprapworld_keypad & KEYPAD_HOME)
     #define REPRAPWORLD_KEYPAD_MOVE_MENU    (buttons_reprapworld_keypad & KEYPAD_EN_C)
 
-    #if BUTTON_EXISTS(ENC)
-      #define LCD_CLICKED ((buttons & EN_C) || REPRAPWORLD_KEYPAD_MOVE_MENU)
-    #else
-      #define LCD_CLICKED REPRAPWORLD_KEYPAD_MOVE_MENU
-    #endif
-
     #define REPRAPWORLD_KEYPAD_PRESSED      (buttons_reprapworld_keypad & ( \
                                               EN_REPRAPWORLD_KEYPAD_F3 | \
                                               EN_REPRAPWORLD_KEYPAD_F2 | \
@@ -219,14 +188,6 @@
                                               EN_REPRAPWORLD_KEYPAD_UP | \
                                               EN_REPRAPWORLD_KEYPAD_LEFT) \
                                             )
-
-  #elif ENABLED(NEWPANEL)
-
-    #define LCD_CLICKED (buttons & EN_C)
-
-  #else
-
-    #define LCD_CLICKED false
 
   #endif
 
@@ -240,7 +201,6 @@
   constexpr bool lcd_wait_for_move = false;
 
   inline void lcd_refresh() {}
-  inline void lcd_buttons_update() {}
   inline bool lcd_hasstatus() { return false; }
   inline void lcd_setstatus(const char* const message, const bool persist=false) { UNUSED(message); UNUSED(persist); }
   inline void lcd_setstatusPGM(const char* const message, const int8_t level=0) { UNUSED(message); UNUSED(level); }
@@ -249,6 +209,51 @@
   inline void lcd_reset_status() {}
 
 #endif // ULTRA_LCD
+
+#if ENABLED(ULTIPANEL)
+
+  #if ENABLED(NEWPANEL) // Uses digital switches, not a shift register
+
+    // Wheel spin pins where BA is 00, 10, 11, 01 (1 bit always changes)
+    #define BLEN_A 0
+    #define BLEN_B 1
+
+    #define EN_A _BV(BLEN_A)
+    #define EN_B _BV(BLEN_B)
+
+    #if BUTTON_EXISTS(ENC)
+      #define BLEN_C 2
+      #define EN_C _BV(BLEN_C)
+    #endif
+
+    #if BUTTON_EXISTS(BACK)
+      #define BLEN_D 3
+      #define EN_D _BV(BLEN_D)
+      #define LCD_BACK_CLICKED (buttons & EN_D)
+    #endif
+
+  #endif // NEWPANEL
+
+  extern volatile uint8_t buttons;  // The last-checked buttons in a bit array.
+  void lcd_buttons_update();
+
+#else
+
+  inline void lcd_buttons_update() {}
+
+#endif
+
+#if ENABLED(REPRAPWORLD_KEYPAD)
+  #ifdef EN_C
+    #define LCD_CLICKED ((buttons & EN_C) || REPRAPWORLD_KEYPAD_MOVE_MENU)
+  #else
+    #define LCD_CLICKED REPRAPWORLD_KEYPAD_MOVE_MENU
+  #endif
+#elif defined(EN_C)
+  #define LCD_CLICKED (buttons & EN_C)
+#else
+  #define LCD_CLICKED false
+#endif
 
 #define LCD_MESSAGEPGM(x)      lcd_setstatusPGM(PSTR(x))
 #define LCD_ALERTMESSAGEPGM(x) lcd_setalertstatusPGM(PSTR(x))
