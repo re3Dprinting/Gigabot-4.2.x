@@ -54,6 +54,32 @@
 // Nanoseconds per cycle
 #define NANOSECONDS_PER_CYCLE (1000000000.0 / F_CPU)
 
+// Microsecond delays for hardware interfaces
+#if CYCLES_PER_MICROSECOND <= 20
+  #define DELAY_1US DELAY_NOPS(CYCLES_PER_MICROSECOND)
+  #define DELAY_US(X) \
+    switch (X) { \
+      case 20: DELAY_1US; case 19: DELAY_1US; case 18: DELAY_1US; case 17: DELAY_1US; \
+      case 16: DELAY_1US; case 15: DELAY_1US; case 14: DELAY_1US; case 13: DELAY_1US; \
+      case 12: DELAY_1US; case 11: DELAY_1US; case 10: DELAY_1US; case  9: DELAY_1US; \
+      case  8: DELAY_1US; case  7: DELAY_1US; case  6: DELAY_1US; case  5: DELAY_1US; \
+      case  4: DELAY_1US; case  3: DELAY_1US; case  2: DELAY_1US; case  1: DELAY_1US; \
+    }
+#else
+  #define DELAY_US(X) delayMicroseconds(X) // May not be usable in CRITICAL_SECTION
+  #define DELAY_1US DELAY_US(1)
+#endif
+#define DELAY_2US  DELAY_US( 2)
+#define DELAY_3US  DELAY_US( 3)
+#define DELAY_4US  DELAY_US( 4)
+#define DELAY_5US  DELAY_US( 5)
+#define DELAY_6US  DELAY_US( 6)
+#define DELAY_7US  DELAY_US( 7)
+#define DELAY_8US  DELAY_US( 8)
+#define DELAY_9US  DELAY_US( 9)
+#define DELAY_10US DELAY_US(10)
+#define DELAY_20US DELAY_US(20)
+
 // Remove compiler warning on an unused variable
 #define UNUSED(x) (void) (x)
 
