@@ -32,8 +32,10 @@
 
 #if SYSTEM_SECTION == SUBSECTION(TEMPERATURE, 3)
   #undef  TEMP_HYSTERESIS
-
   #define TEMP_HYSTERESIS 4       // (degC) range of +/- temperatures considered "close" to the target one
+
+  #undef  WATCH_TEMP_PERIOD
+  #define WATCH_TEMP_PERIOD 60                // Seconds
 
   #undef  WATCH_BED_TEMP_PERIOD
   #define WATCH_BED_TEMP_PERIOD 145            // Seconds
@@ -117,7 +119,7 @@
   #undef  USE_ZMAX_PLUG
 
   #define USE_XMIN_PLUG true
-  #define USE_YMIN_PLUG true
+  #define USE_YMIN_PLUG false
   #define USE_ZMIN_PLUG true
   #define USE_XMAX_PLUG false
   #define USE_YMAX_PLUG true
@@ -132,7 +134,7 @@
   #undef  Z_MIN_ENDSTOP_INVERTING
 
   #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-  #define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+  #define Y_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
   #define Z_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
   #define X_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
   #define Y_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
@@ -404,14 +406,14 @@
 
   #define Y_DUAL_STEPPER_DRIVERS true
   #define Z_DUAL_STEPPER_DRIVERS true
-  #define Y_DUAL_ENDSTOPS        true
-  #define Y2_USE_ENDSTOP         true
+  #define Y_DUAL_ENDSTOPS        false
+  #define Y2_USE_ENDSTOP         false
 
   #define Y_DUAL_STEPPER_DRIVERS
   #if ENABLED(Y_DUAL_STEPPER_DRIVERS)
 	#undef INVERT_Y2_VS_Y_DIR
     #define INVERT_Y2_VS_Y_DIR true   // Set 'true' if Y motors should rotate in opposite directions
-    #define Y_DUAL_ENDSTOPS
+    //#define Y_DUAL_ENDSTOPS
     #if ENABLED(Y_DUAL_ENDSTOPS)
       #define Y2_USE_ENDSTOP _YMIN_
       #define Y_DUAL_ENDSTOPS_ADJUSTMENT  0
@@ -464,8 +466,8 @@
 
 
   #define X_MAX_PIN         -1
-  #define Y_MAX_PIN         15
-  #define Y_MIN_PIN         14
+  #define Y_MAX_PIN         14
+  #define Y_MIN_PIN         15
 
   #undef  BEEPER_PIN
   #define BEEPER_PIN        33         
