@@ -34,11 +34,13 @@
 
 #if SYSTEM_SECTION == SUBSECTION(TEMPERATURE, 3)
   #undef  TEMP_HYSTERESIS
-
   #define TEMP_HYSTERESIS 4       // (degC) range of +/- temperatures considered "close" to the target one
 
+  #undef  WATCH_TEMP_PERIOD
+  #define WATCH_TEMP_PERIOD 80                // Seconds
+
   #undef  WATCH_BED_TEMP_PERIOD
-  #define WATCH_BED_TEMP_PERIOD 145            // Seconds
+  #define WATCH_BED_TEMP_PERIOD 200            // Seconds
  #endif
 
 #if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 1)
