@@ -950,10 +950,12 @@ float Temperature::analog2temp(const int raw, const uint8_t e) {
 
   // Thermocouple with amplifier ADC interface
   return (raw *
-    #if HEATER_USES_AD8495
-      660.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD8495_GAIN) + TEMP_SENSOR_AD8495_OFFSET
-    #elif HEATER_USES_AD595
+
+    #if HEATER_USES_AD595
       5.0 * 100.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD595_GAIN) + TEMP_SENSOR_AD595_OFFSET
+    #elif HEATER_USES_AD8495
+      //660.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD8495_GAIN) + TEMP_SENSOR_AD8495_OFFSET
+      AD8495_FORMULA
     #else
       0
     #endif
@@ -1134,9 +1136,11 @@ void Temperature::init() {
 
   #if HAS_HEATER_0
     SET_OUTPUT(HEATER_0_PIN);
+    SET_OUTPUT(HEATER_1_PIN);
   #endif
   #if HAS_HEATER_1
-    SET_OUTPUT(HEATER_1_PIN);
+    SET_OUTPUT(HEATER_4_PIN); //heater band 2 for GBX on heaters 4&5
+    SET_OUTPUT(HEATER_5_PIN);
   #endif
   #if HAS_HEATER_2
     SET_OUTPUT(HEATER_2_PIN);
@@ -1145,7 +1149,7 @@ void Temperature::init() {
     SET_OUTPUT(HEATER_3_PIN);
   #endif
   #if HAS_HEATER_4
-    SET_OUTPUT(HEATER_3_PIN);
+    //SET_OUTPUT(HEATER_3_PIN);
   #endif
   #if HAS_HEATED_BED
     SET_OUTPUT(HEATER_BED_PIN);

@@ -7,11 +7,11 @@
 #include "gigabot.h"
 
 #undef MSG_GIGABOT3
-#define MSG_GIGABOT3 "Gigabot 3+"
+#define MSG_GIGABOT3 "Gigabot X"
 
 #if SYSTEM_SECTION == INFO
   #undef  STRING_CONFIG_H_AUTHOR
-  #define STRING_CONFIG_H_AUTHOR "(GBXL V4.x.x - Marlin 1.1.8)"
+  #define STRING_CONFIG_H_AUTHOR "(GBX - Marlin 1.1.8)"
 
   #undef  SHOW_CUSTOM_BOOTSCREEN
   #define SHOW_CUSTOM_BOOTSCREEN
@@ -47,6 +47,20 @@
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(TEMPERATURE, 1)
+  #undef  TEMP_SENSOR_0
+  #undef  TEMP_SENSOR_1
+  #undef  TEMP_SENSOR_2
+  #undef  TEMP_SENSOR_3
+  #undef  TEMP_SENSOR_4
+  #undef  TEMP_SENSOR_BED
+
+  #define TEMP_SENSOR_0   -1
+  #define TEMP_SENSOR_1   -1
+  #define TEMP_SENSOR_2    -4
+  #define TEMP_SENSOR_3    0
+  #define TEMP_SENSOR_4    0
+  #define TEMP_SENSOR_BED -4
+
   #undef HEATER_0_MAXTEMP 
   #undef HEATER_1_MAXTEMP 
   #define HEATER_0_MAXTEMP 400
@@ -68,11 +82,19 @@
 
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 118.52, 118.52, 4031.5, 1000 }
   #define DEFAULT_MAX_FEEDRATE          { 150, 150, 4, 60 }
-  #define DEFAULT_MAX_ACCELERATION      { 2000, 2000, 100, 10000 }
+  #define DEFAULT_MAX_ACCELERATION      { 900, 900, 100, 1000 }
   #define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1500  
-  #define DEFAULT_XJERK                 9.0
+  #define DEFAULT_XJERK                 5.0
   #define DEFAULT_YJERK                 9.0
+#endif
+
+#if SYSTEM_SECTION == SUBSECTION(MACHINE, 4)
+  #undef  INVERT_X_DIR
+  #undef  INVERT_Y_DIR
+
+  #define INVERT_X_DIR false
+  #define INVERT_Y_DIR false
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(MACHINE, 5)
@@ -100,3 +122,20 @@
   #endif
 #endif
 
+#if SYSTEM_SECTION == AZTEEG_X3_PRO
+  #undef  HEATER_BED_PIN
+  #undef  TEMP_BED_PIN
+  #undef  FAN_PIN
+
+  #undef  TEMP_0_PIN
+  #undef  TEMP_1_PIN
+  #undef  TEMP_2_PIN 
+
+  #define HEATER_BED_PIN      8
+  #define FAN_PIN             17 // Part Cooling System
+
+  #define TEMP_0_PIN          4   // Analog Input
+  #define TEMP_1_PIN          5   // Analog Input
+  #define TEMP_2_PIN   		    9
+  #define TEMP_BED_PIN        3   // Analog Input
+#endif

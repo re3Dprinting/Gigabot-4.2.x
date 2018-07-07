@@ -826,7 +826,7 @@
    */
   #define WRITE_HEATER_0P(v) WRITE(HEATER_0_PIN, v)
   #if HOTENDS > 1 || ENABLED(HEATERS_PARALLEL)
-    #define WRITE_HEATER_1(v) WRITE(HEATER_1_PIN, v)
+    #define WRITE_HEATER_1(v) { WRITE(HEATER_4_PIN, v); WRITE(HEATER_5_PIN, v); }
     #if HOTENDS > 2
       #define WRITE_HEATER_2(v) WRITE(HEATER_2_PIN, v)
       #if HOTENDS > 3
@@ -837,10 +837,11 @@
       #endif // HOTENDS > 3
     #endif // HOTENDS > 2
   #endif // HOTENDS > 1
+  
   #if ENABLED(HEATERS_PARALLEL)
     #define WRITE_HEATER_0(v) { WRITE_HEATER_0P(v); WRITE_HEATER_1(v); }
   #else
-    #define WRITE_HEATER_0(v) WRITE_HEATER_0P(v)
+    #define WRITE_HEATER_0(v) { WRITE_HEATER_0P(v); WRITE(HEATER_1_PIN, v); } //WRITE_HEATER_0(v) WRITE_HEATER_0P(v)
   #endif
 
   /**

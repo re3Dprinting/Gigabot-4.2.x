@@ -120,10 +120,10 @@
 #define HEATER_7_PIN       11
 
 #undef FAN_PIN
-#define FAN_PIN             6   // Part Cooling System
+#define FAN_PIN             17    // Part Cooling System
 
 #ifndef CONTROLLER_FAN_PIN
-  #define CONTROLLER_FAN_PIN 4   // Pin used for the fan to cool motherboard (-1 to disable)
+  #define CONTROLLER_FAN_PIN 16   // Pin used for the fan to cool motherboard (-1 to disable)
 #endif
 
 // Fans/Water Pump to cool the hotend cool side.
