@@ -17,6 +17,13 @@
   #define SHOW_CUSTOM_BOOTSCREEN
 #endif
 
+#if SYSTEM_SECTION == SUBSECTION(TEMPERATURE, 2)
+  #if ENABLED(NOZZLE_PARK_FEATURE)
+	#undef NOZZLE_PARK_POINT
+    #define NOZZLE_PARK_POINT { (X_MIN_POS + 915), (Y_MIN_POS + 10), 20 }
+  #endif
+#endif
+
 #if SYSTEM_SECTION == SUBSECTION(TEMPERATURE, 3)
   #undef  TEMP_HYSTERESIS
 
@@ -68,7 +75,7 @@
   #define X_BED_SIZE   915
   #define Y_BED_SIZE   915
   #define Z_MAX_POS    915
-  #define X_MIN_POS -63
+  #define X_MIN_POS    -63
 
 
 #endif
