@@ -933,6 +933,10 @@ float Temperature::analog2temp(const int raw, const uint8_t e) {
     if (e == 0) return 0.25 * raw;
   #endif
 
+  #if ENABLED(HEATER_2_USES_AD8495)
+    if (e == 2) return raw * AD8495_FORMULA;
+  #endif
+
   // Thermistor with conversion table?
   if (heater_ttbl_map[e] != NULL) {
     short(*tt)[][2] = (short(*)[][2])(heater_ttbl_map[e]);
