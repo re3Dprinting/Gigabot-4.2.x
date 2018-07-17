@@ -136,6 +136,21 @@
 
   #define TEMP_0_PIN          4   // Analog Input
   #define TEMP_1_PIN          5   // Analog Input
-  #define TEMP_2_PIN   		    9
+  #define TEMP_2_PIN   		  9
   #define TEMP_BED_PIN        3   // Analog Input
+#endif
+
+#if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 5)
+  #undef  E0_AUTO_FAN_PIN 
+  #undef  E1_AUTO_FAN_PIN 
+  #undef  CHAMBER_AUTO_FAN_PIN
+  #undef  EXTRUDER_AUTO_FAN_TEMPERATURE
+  #undef  EXTRUDER_AUTO_FAN_SPEED
+
+  #define E0_AUTO_FAN_PIN 16
+  #define E1_AUTO_FAN_PIN 16
+  #define E2_AUTO_FAN_PIN 16
+  #define CHAMBER_AUTO_FAN_PIN -1
+  #define EXTRUDER_AUTO_FAN_TEMPERATURE 25
+  #define EXTRUDER_AUTO_FAN_SPEED   255  // == full speed
 #endif
