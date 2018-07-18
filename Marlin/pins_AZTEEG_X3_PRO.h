@@ -112,8 +112,8 @@
 //
 // Heaters / Fans
 //
-#define HEATER_2_PIN       16
-#define HEATER_3_PIN       17
+#define HEATER_2_PIN        5//16
+#define HEATER_3_PIN        6//17
 #define HEATER_4_PIN        4
 #define HEATER_5_PIN        5
 #define HEATER_6_PIN        6

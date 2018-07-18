@@ -933,10 +933,6 @@ float Temperature::analog2temp(const int raw, const uint8_t e) {
     if (e == 0) return 0.25 * raw;
   #endif
 
-  #if ENABLED(HEATER_2_USES_AD8495)
-    if (e == 2) return raw * AD8495_FORMULA;
-  #endif
-
   // Thermistor with conversion table?
   if (heater_ttbl_map[e] != NULL) {
     short(*tt)[][2] = (short(*)[][2])(heater_ttbl_map[e]);
@@ -951,6 +947,12 @@ float Temperature::analog2temp(const int raw, const uint8_t e) {
     }
     return PGM_RD_W((*tt)[heater_ttbllen_map[e] - 1][1]); // Overflow: Return last value in the table
   }
+
+  #if ENABLED(HEATER_2_USES_AD8495)
+    if (e == 2){
+      return (raw * AD8495_FORMULA);
+    }
+  #endif
 
   // Thermocouple with amplifier ADC interface
   return (raw *
@@ -1147,13 +1149,13 @@ void Temperature::init() {
     SET_OUTPUT(HEATER_5_PIN);
   #endif
   #if HAS_HEATER_2
-    SET_OUTPUT(HEATER_2_PIN);
+    //SET_OUTPUT(HEATER_2_PIN);
   #endif
   #if HAS_HEATER_3
     SET_OUTPUT(HEATER_3_PIN);
   #endif
   #if HAS_HEATER_4
-    //SET_OUTPUT(HEATER_3_PIN);
+    SET_OUTPUT(HEATER_3_PIN);
   #endif
   #if HAS_HEATED_BED
     SET_OUTPUT(HEATER_BED_PIN);

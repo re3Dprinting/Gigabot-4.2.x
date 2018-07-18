@@ -392,7 +392,7 @@
 #if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 5)
   #undef  E0_AUTO_FAN_PIN 
   #undef  E1_AUTO_FAN_PIN 
-  //#define E0_AUTO_FAN_PIN 16
+  #define E0_AUTO_FAN_PIN 16
   //#define E1_AUTO_FAN_PIN 17
 #endif
 
