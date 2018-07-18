@@ -44,6 +44,9 @@
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(TEMPERATURE, 1)
+  #undef  BED_MAXTEMP
+  #define BED_MAXTEMP      135
+
   #if ENABLED(PIDTEMP)
     #undef  DEFAULT_Kp
     #undef  DEFAULT_Ki
