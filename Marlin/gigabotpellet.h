@@ -80,7 +80,7 @@
   #undef  DEFAULT_XJERK
   #undef  DEFAULT_YJERK
 
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 106.67, 118.52, 4031.5, 3125 }
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 106.67, 118.52, 4031.5, 600 }
   #define DEFAULT_MAX_FEEDRATE          { 150, 150, 4, 60 }
   #define DEFAULT_MAX_ACCELERATION      { 900, 900, 100, 10000 }
   #define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
@@ -102,8 +102,8 @@
   #undef  Y_BED_SIZE
   #undef  Z_MAX_POS
 
-  #define X_BED_SIZE   590
-  #define Y_BED_SIZE   610
+  #define X_BED_SIZE   580
+  #define Y_BED_SIZE   540
   #define Z_MAX_POS    609
 
   #define ADVANCED_PAUSE_FEATURE

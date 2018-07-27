@@ -1149,7 +1149,8 @@ void Temperature::init() {
     SET_OUTPUT(HEATER_5_PIN);
   #endif
   #if HAS_HEATER_2
-    //SET_OUTPUT(HEATER_2_PIN);
+    SET_OUTPUT(HEATER_6_PIN);
+    SET_OUTPUT(HEATER_7_PIN);
   #endif
   #if HAS_HEATER_3
     SET_OUTPUT(HEATER_3_PIN);
