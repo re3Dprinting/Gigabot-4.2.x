@@ -255,6 +255,7 @@
   #if ENABLED(NOZZLE_PARK_FEATURE)
     #define NOZZLE_PARK_POINT { (X_MIN_POS + 500), (Y_MAX_POS - 10), 20 }
   #endif
+  #define PARK_HEAD_ON_PAUSE
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(LCD, 1)
