@@ -137,16 +137,6 @@ struct duration_t {
     else sprintf_P(buffer, PSTR("%is"), s);
   }
 
-  void toHours(char *buffer) const {
-  int h = this->hour() % 24,
-      m = this->minute() % 60,
-      s = this->second() % 60;
-
-  if (h) sprintf_P(buffer, PSTR("%ih %im %is"), h, m, s);
-  else if (m) sprintf_P(buffer, PSTR("%im %is"), m, s);
-  else sprintf_P(buffer, PSTR("%is"), s);
-  }
-
   /**
    * @brief Formats the duration as a string
    * @details String will be formated using a "digital" representation of duration

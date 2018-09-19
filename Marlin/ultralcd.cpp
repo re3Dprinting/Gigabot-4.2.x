@@ -4257,7 +4257,7 @@ void lcd_filament_runout_menu() {
         STATIC_ITEM(MSG_INFO_COMPLETED_PRINTS": ", false, false, itostr3left(stats.finishedPrints));   // Completed  : 666
 
         duration_t elapsed = stats.printTime;
-        elapsed.toHours(buffer);
+        elapsed.toString(buffer);
 
         STATIC_ITEM(MSG_INFO_PRINT_TIME ": ", false, false);                                           // Total print Time:
         STATIC_ITEM("", false, false, buffer);                                                         // 99y 364d 23h 59m 59s
