@@ -67,8 +67,10 @@
 
   #undef HEATER_0_MAXTEMP 
   #undef HEATER_1_MAXTEMP 
+  #undef HEATER_2_MAXTEMP 
   #define HEATER_0_MAXTEMP 400
   #define HEATER_1_MAXTEMP 400
+  #define HEATER_2_MAXTEMP 400
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(HOMING, 4)
@@ -140,8 +142,8 @@
 
   #define TEMP_0_PIN          4   // Analog Input
   #define TEMP_1_PIN          5   // Analog Input
-  #define TEMP_2_PIN   		    9
-  #define TEMP_BED_PIN        3   // Analog Input
+  #define TEMP_2_PIN   		    9   // Analog Input (D63)
+  #define TEMP_BED_PIN        3   // Analog Input (D57)
 #endif
 
 #undef  E0_AUTO_FAN_PIN 
