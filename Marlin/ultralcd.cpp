@@ -4728,17 +4728,17 @@ void lcd_filament_runout_menu() {
           PGM_P msg0 = PSTR(MSG_PRIMENOZZLE);
           PGM_P msg1 = PSTR(MSG_PURGENOZZLE2);
           PGM_P msg2 = PSTR(MSG_PURGENOZZLE5);
-          PGM_P msg3 = PSTR(MSG_PURGENOZZLE8);
+          PGM_P msg3 = PSTR(MSG_PURGENOZZLE10);
           if (thermalManager.targetTooColdToExtrude(0))
             MENU_ITEM_P(submenu, msg0, lcd_temp_menu_e0_filament_change);
           else
-            MENU_ITEM_P(gcode, msg0, PSTR("G1 E2000"));
+            MENU_ITEM_P(gcode, msg0, PSTR("G1 E60 F150"));
           if (thermalManager.targetTooColdToExtrude(1))
             MENU_ITEM_P(submenu, msg1, lcd_temp_menu_e1_filament_change);
           else
-            MENU_ITEM_P(gcode, msg1, PSTR("G1 E5000"));
-            MENU_ITEM_P(gcode, msg2, PSTR("G1 E7500"));
-            MENU_ITEM_P(gcode, msg3, PSTR("G1 E10000"));
+            MENU_ITEM_P(gcode, msg1, PSTR("G1 E300 F150"));
+            MENU_ITEM_P(gcode, msg2, PSTR("G1 E750 F150"));
+            MENU_ITEM_P(gcode, msg3, PSTR("G1 E1500 F150"));
         #endif // E_STEPPERS == 1
        
         END_MENU();

@@ -75,6 +75,8 @@
 
 #if SYSTEM_SECTION == SUBSECTION(HOMING, 4)
   #undef DUAL_NOZZLE_DUPLICATION_MODE
+  #undef MANUAL_FEEDRATE
+  #define MANUAL_FEEDRATE {50*60, 50*60, 4*60, 100}
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(MOTION, 1)
@@ -108,8 +110,8 @@
   #undef  Y_BED_SIZE
   #undef  Z_MAX_POS
 
-  #define X_BED_SIZE   580
-  #define Y_BED_SIZE   540
+  #define X_BED_SIZE   565
+  #define Y_BED_SIZE   600
   #define Z_MAX_POS    465
 
   #define ADVANCED_PAUSE_FEATURE
@@ -176,12 +178,16 @@
   #define MSG_PRIMENOZZLE                     _UxGT("Prime Nozzle")
 #endif
 #ifndef MSG_PURGENOZZLE2
-  #define MSG_PURGENOZZLE2                    _UxGT("Purge 2 Min")
+  #define MSG_PURGENOZZLE2                    _UxGT("Purge 2 Minutes")
 #endif
 #ifndef MSG_PURGENOZZLE5
-  #define MSG_PURGENOZZLE5                    _UxGT("Purge 5 Min")
+  #define MSG_PURGENOZZLE5                    _UxGT("Purge 5 Minutes")
 #endif
-#ifndef MSG_PURGENOZZLE8
-  #define MSG_PURGENOZZLE8                    _UxGT("Purge 8 Min")
+#ifndef MSG_PURGENOZZLE10
+  #define MSG_PURGENOZZLE10                    _UxGT("Purge 10 Minutes")
 #endif
 
+#undef MSG_NOZZLE
+#define MSG_NOZZLE                          _UxGT("Heater Band")
+#undef MSG_FILAMENT_CHANGE_NOZZLE
+#define MSG_FILAMENT_CHANGE_NOZZLE          _UxGT("  Heater Band: ")
