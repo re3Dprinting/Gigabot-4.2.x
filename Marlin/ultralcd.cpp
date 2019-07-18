@@ -858,6 +858,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
       wait_for_heatup = wait_for_user = false;
       abort_sd_printing = true;
       lcd_setstatusPGM(PSTR(MSG_PRINT_ABORTED), -1);
+      stepper.cleaning_buffer_counter = 1; // The command will fire from the Stepper ISR
       lcd_return_to_status();
 
       #if ENABLED(POWER_LOSS_RECOVERY)
@@ -2929,7 +2930,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
       //
       // Set Home Offsets
       //
-      MENU_ITEM(function, MSG_SET_HOME_OFFSETS, lcd_set_home_offsets);
+      //MENU_ITEM(function, MSG_SET_HOME_OFFSETS, lcd_set_home_offsets);
     #endif
 
     //
@@ -4046,7 +4047,7 @@ void lcd_filament_runout_menu() {
       #endif
 
       #if DISABLED(NO_VOLUMETRICS)
-        MENU_ITEM_EDIT_CALLBACK(bool, MSG_VOLUMETRIC_ENABLED, &parser.volumetric_enabled, planner.calculate_volumetric_multipliers);
+        //MENU_ITEM_EDIT_CALLBACK(bool, MSG_VOLUMETRIC_ENABLED, &parser.volumetric_enabled, planner.calculate_volumetric_multipliers);
 
         if (parser.volumetric_enabled) {
           #if EXTRUDERS == 1
@@ -4080,9 +4081,9 @@ void lcd_filament_runout_menu() {
         #if EXTRUDERS == 1
           MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_UNLOAD, &filament_change_unload_length[0], 0.0, extrude_maxlength);
         #else // EXTRUDERS > 1
-          MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_UNLOAD, &filament_change_unload_length[active_extruder], 0.0, extrude_maxlength);
-          MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_UNLOAD MSG_DIAM_E1, &filament_change_unload_length[0], 0.0, extrude_maxlength);
-          MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_UNLOAD MSG_DIAM_E2, &filament_change_unload_length[1], 0.0, extrude_maxlength);
+         // MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_UNLOAD, &filament_change_unload_length[active_extruder], 0.0, extrude_maxlength);
+          //MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_UNLOAD MSG_DIAM_E1, &filament_change_unload_length[0], 0.0, extrude_maxlength);
+          //MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_UNLOAD MSG_DIAM_E2, &filament_change_unload_length[1], 0.0, extrude_maxlength);
           #if EXTRUDERS > 2
             MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_UNLOAD MSG_DIAM_E3, &filament_change_unload_length[2], 0.0, extrude_maxlength);
           #if EXTRUDERS > 3
@@ -4097,9 +4098,9 @@ void lcd_filament_runout_menu() {
         #if EXTRUDERS == 1
           MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_LOAD, &filament_change_load_length[0], 0.0, extrude_maxlength);
         #else // EXTRUDERS > 1
-          MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_LOAD, &filament_change_load_length[active_extruder], 0.0, extrude_maxlength);
-          MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_LOAD MSG_DIAM_E1, &filament_change_load_length[0], 0.0, extrude_maxlength);
-          MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_LOAD MSG_DIAM_E2, &filament_change_load_length[1], 0.0, extrude_maxlength);
+          //MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_LOAD, &filament_change_load_length[active_extruder], 0.0, extrude_maxlength);
+          //MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_LOAD MSG_DIAM_E1, &filament_change_load_length[0], 0.0, extrude_maxlength);
+          //MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_LOAD MSG_DIAM_E2, &filament_change_load_length[1], 0.0, extrude_maxlength);
           #if EXTRUDERS > 2
             MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_FILAMENT_LOAD MSG_DIAM_E3, &filament_change_load_length[2], 0.0, extrude_maxlength);
           #if EXTRUDERS > 3
@@ -4348,9 +4349,9 @@ void lcd_filament_runout_menu() {
       START_SCREEN();
       STATIC_ITEM(BOARD_NAME, true, true);                           // MyPrinterController
       STATIC_ITEM(MSG_INFO_BAUDRATE ": " STRINGIFY(BAUDRATE), true); // Baud: 250000
-      STATIC_ITEM(MSG_INFO_PROTOCOL ": " PROTOCOL_VERSION, true);    // Protocol: 1.0
+      //STATIC_ITEM(MSG_INFO_PROTOCOL ": " PROTOCOL_VERSION, true);    // Protocol: 1.0
       #if POWER_SUPPLY == 0
-        STATIC_ITEM(MSG_INFO_PSU ": Generic", true);
+        STATIC_ITEM(MSG_INFO_PSU ": 24V", true);
       #elif POWER_SUPPLY == 1
         STATIC_ITEM(MSG_INFO_PSU ": ATX", true);  // Power Supply: ATX
       #elif POWER_SUPPLY == 2

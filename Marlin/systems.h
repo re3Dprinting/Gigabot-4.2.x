@@ -14,11 +14,14 @@
 #define CONCAT5(n1, n2, n3, n4, n5) STRINGIFY_MACRO(EXPAND(n1)EXPAND(n2)EXPAND(n3)EXPAND(n4)EXPAND(n5))
 #define CONCAT_(a, b) a ## b
 
+
 //#define SYSTEM gigabot
 
  //#define SYSTEM gigabotxl
 
- //#define SYSTEM gigabotxlt
+//#define SYSTEM gigabotxlt
+
+//#define SYSTEM giga_terabot
 
 #define SYSTEM gigabotpellet
 

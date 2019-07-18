@@ -6,6 +6,9 @@
 
 #include "gigabot.h"
 
+#undef MSG_GIGABOT3
+#define MSG_GIGABOT3 "Gigabot 3+ XL"
+
 #if SYSTEM_SECTION == INFO
   #undef  STRING_CONFIG_H_AUTHOR
   #define STRING_CONFIG_H_AUTHOR "(GBXL V4.x.x - Marlin 1.1.8)"

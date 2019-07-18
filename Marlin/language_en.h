@@ -949,7 +949,7 @@
   #define MSG_INFO_BOARD_MENU                 _UxGT("Board Info")
 #endif
 #ifndef MSG_INFO_THERMISTOR_MENU
-  #define MSG_INFO_THERMISTOR_MENU            _UxGT("Thermistors")
+  #define MSG_INFO_THERMISTOR_MENU            _UxGT("Thermocouples")
 #endif
 #ifndef MSG_INFO_EXTRUDERS
   #define MSG_INFO_EXTRUDERS                  _UxGT("Extruders")
