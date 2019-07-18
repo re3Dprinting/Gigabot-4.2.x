@@ -207,6 +207,7 @@ uint16_t max_display_update_time = 0;
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     #if E_STEPPERS > 1 || ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
       void lcd_change_filament_menu();
+      void lcd_change_pellet_menu();
     #else
       void lcd_temp_menu_e0_filament_change();
     #endif
@@ -1591,15 +1592,15 @@ void lcd_quick_feedback(const bool clear_buttons) {
   }
 
   #if HAS_TEMP_HOTEND
-    void lcd_preheat_m1_e0_only() { _lcd_preheat(0, 165, -1, lcd_preheat_fan_speed[0]); _lcd_preheat(1, 200, -1, lcd_preheat_fan_speed[0]); }
-    void lcd_preheat_m2_e0_only() { _lcd_preheat(0, 220, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 230, -1, lcd_preheat_fan_speed[1]); }
-	void lcd_preheat_m3_e0_only() { _lcd_preheat(0, 235, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 235, -1, lcd_preheat_fan_speed[1]); }
-	void lcd_preheat_m4_e0_only() { _lcd_preheat(0, 220, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 230, -1, lcd_preheat_fan_speed[1]); }
+    void lcd_preheat_m1_e0_only() { _lcd_preheat(0, 180, -1, lcd_preheat_fan_speed[0]); _lcd_preheat(1, 170, -1, lcd_preheat_fan_speed[0]); _lcd_preheat(2, 160, -1, lcd_preheat_fan_speed[0]);}
+    void lcd_preheat_m2_e0_only() { _lcd_preheat(0, 240, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 230, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 220, -1, lcd_preheat_fan_speed[1]);}
+	  void lcd_preheat_m3_e0_only() { _lcd_preheat(0, 230, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 220, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 210, -1, lcd_preheat_fan_speed[1]);}
+	  void lcd_preheat_m4_e0_only() { _lcd_preheat(0, 170, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 160, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 150, -1, lcd_preheat_fan_speed[1]);}
     #if HAS_HEATED_BED
-      void lcd_preheat_m1_e0() { _lcd_preheat(0, 165, 60, lcd_preheat_fan_speed[0]); _lcd_preheat(1, 200, 60, lcd_preheat_fan_speed[0]); }
-      void lcd_preheat_m2_e0() { _lcd_preheat(0, 220, 75, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 230, 75, lcd_preheat_fan_speed[1]); }
-	  void lcd_preheat_m3_e0() { _lcd_preheat(0, 235, 90, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 235, 90, lcd_preheat_fan_speed[1]); }
-	  void lcd_preheat_m4_e0() { _lcd_preheat(0, 230, 45, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 250, 45, lcd_preheat_fan_speed[1]); }
+      void lcd_preheat_m1_e0() { _lcd_preheat(0, 180, 65, lcd_preheat_fan_speed[0]); _lcd_preheat(1, 170, 65, lcd_preheat_fan_speed[0]); _lcd_preheat(2, 160, 65, lcd_preheat_fan_speed[0]);}
+      void lcd_preheat_m2_e0() { _lcd_preheat(0, 240, 75, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 230, 75, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 220, 75, lcd_preheat_fan_speed[0]);}
+	    void lcd_preheat_m3_e0() { _lcd_preheat(0, 230, 65, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 225, 65, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 210, 65, lcd_preheat_fan_speed[0]);}
+	    void lcd_preheat_m4_e0() { _lcd_preheat(0, 170, 45, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 160, 45, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 150, 45, lcd_preheat_fan_speed[0]);}
     #endif
   #endif
 
@@ -2851,7 +2852,8 @@ void lcd_quick_feedback(const bool clear_buttons) {
           else
             MENU_ITEM(submenu, MSG_FILAMENTCHANGE, lcd_temp_menu_e0_filament_change);
         #else
-          MENU_ITEM(submenu, MSG_FILAMENTCHANGE, lcd_change_filament_menu);
+          //MENU_ITEM(submenu, MSG_FILAMENTCHANGE, lcd_change_filament_menu);
+          MENU_ITEM(submenu, MSG_PELLETCHANGE, lcd_change_pellet_menu);
         #endif
       }
     #endif // ADVANCED_PAUSE_FEATURE
@@ -4703,6 +4705,45 @@ void lcd_filament_runout_menu() {
         END_MENU();
       }
     #endif
+
+     /**
+     *
+     * "Change Pellets" submenu
+     *
+     */
+    #if E_STEPPERS > 1 || ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
+      void lcd_change_pellet_menu() {
+        START_MENU();
+        MENU_BACK(MSG_PREPARE);
+
+        // Change Pellets
+        #if E_STEPPERS == 1
+          PGM_P msg0 = PSTR(MSG_FILAMENTCHANGE);
+          if (thermalManager.targetTooColdToExtrude(active_extruder))
+            MENU_ITEM_P(submenu, msg0, lcd_temp_menu_e0_filament_change);
+          else
+            MENU_ITEM_P(gcode, msg0, PSTR("M600 B0"));
+        #else
+          PGM_P msg0 = PSTR(MSG_PRIMENOZZLE);
+          PGM_P msg1 = PSTR(MSG_PURGENOZZLE2);
+          PGM_P msg2 = PSTR(MSG_PURGENOZZLE5);
+          PGM_P msg3 = PSTR(MSG_PURGENOZZLE8);
+          if (thermalManager.targetTooColdToExtrude(0))
+            MENU_ITEM_P(submenu, msg0, lcd_temp_menu_e0_filament_change);
+          else
+            MENU_ITEM_P(gcode, msg0, PSTR("G1 E2000"));
+          if (thermalManager.targetTooColdToExtrude(1))
+            MENU_ITEM_P(submenu, msg1, lcd_temp_menu_e1_filament_change);
+          else
+            MENU_ITEM_P(gcode, msg1, PSTR("G1 E5000"));
+            MENU_ITEM_P(gcode, msg2, PSTR("G1 E7500"));
+            MENU_ITEM_P(gcode, msg3, PSTR("G1 E10000"));
+        #endif // E_STEPPERS == 1
+       
+        END_MENU();
+      }
+    #endif
+
 
     static AdvancedPauseMode advanced_pause_mode = ADVANCED_PAUSE_MODE_PAUSE_PRINT;
     static uint8_t hotend_status_extruder = 0;

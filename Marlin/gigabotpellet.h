@@ -110,7 +110,7 @@
 
   #define X_BED_SIZE   580
   #define Y_BED_SIZE   540
-  #define Z_MAX_POS    609
+  #define Z_MAX_POS    465
 
   #define ADVANCED_PAUSE_FEATURE
   #define NOZZLE_PARK_FEATURE
@@ -159,3 +159,29 @@
 #define CHAMBER_AUTO_FAN_PIN -1
 #define EXTRUDER_AUTO_FAN_TEMPERATURE 18
 #define EXTRUDER_AUTO_FAN_SPEED   255  // == full speed
+
+
+
+//Menu Text for Pellet Extruder
+#define MSG_B1 "B1"
+#define MSG_B2 "B2"
+#define MSG_B3 "B3"
+#define MSG_B4 "B4"
+#define MSG_B5 "B5"
+
+#ifndef MSG_PELLETCHANGE
+  #define MSG_PELLETCHANGE                    _UxGT("Change Pellet")
+#endif
+#ifndef MSG_PRIMENOZZLE
+  #define MSG_PRIMENOZZLE                     _UxGT("Prime Nozzle")
+#endif
+#ifndef MSG_PURGENOZZLE2
+  #define MSG_PURGENOZZLE2                    _UxGT("Purge 2 Min")
+#endif
+#ifndef MSG_PURGENOZZLE5
+  #define MSG_PURGENOZZLE5                    _UxGT("Purge 5 Min")
+#endif
+#ifndef MSG_PURGENOZZLE8
+  #define MSG_PURGENOZZLE8                    _UxGT("Purge 8 Min")
+#endif
+

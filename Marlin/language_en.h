@@ -161,7 +161,7 @@
   #define MSG_PREHEAT_3_SETTINGS              MSG_PREHEAT_3 _UxGT(" conf")
 #endif
 #ifndef MSG_PREHEAT_4
-  #define MSG_PREHEAT_4                       _UxGT("Preheat Polypropylene")
+  #define MSG_PREHEAT_4                       _UxGT("Preheat TPU")
 #endif
 #ifndef MSG_PREHEAT_4_N
   #define MSG_PREHEAT_4_N                     MSG_PREHEAT_4 _UxGT(" ")
