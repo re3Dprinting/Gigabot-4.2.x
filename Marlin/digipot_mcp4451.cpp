@@ -25,8 +25,8 @@
 #if ENABLED(DIGIPOT_I2C) && DISABLED(DIGIPOT_MCP4018)
 
 #include "Stream.h"
-#include "utility/twi.h"
 #include "Wire.h"
+#include "utility/twi.h"
 
 // Settings for the I2C based DIGIPOT (MCP4451) on Azteeg X3 Pro
 #if MB(5DPRINT)

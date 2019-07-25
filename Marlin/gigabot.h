@@ -401,7 +401,7 @@
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(EXTRAS, 4)
-//  #define DIGIPOT_I2C
+  #define DIGIPOT_I2C
   #undef  DIGIPOT_I2C_NUM_CHANNELS
   #define DIGIPOT_I2C_NUM_CHANNELS    7 // AZTEEG_X3_PRO: 8 (Not sure why this was set to 7 at some point)
   #undef  DIGIPOT_I2C_MOTOR_CURRENTS
