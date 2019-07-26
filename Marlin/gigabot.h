@@ -405,7 +405,7 @@
   #undef  DIGIPOT_I2C_NUM_CHANNELS
   #define DIGIPOT_I2C_NUM_CHANNELS    7 // AZTEEG_X3_PRO: 8 (Not sure why this was set to 7 at some point)
   #undef  DIGIPOT_I2C_MOTOR_CURRENTS
-  #define DIGIPOT_I2C_MOTOR_CURRENTS  { 2.0, 2.0, 2.0, 1.68, 1.68, 1.8, 1.8 }  //  AZTEEG_X3_PRO
+  #define DIGIPOT_I2C_MOTOR_CURRENTS  { 2.25, 1.75, 1.75, 1.68, 1.68, 1.8, 1.8 }  //  AZTEEG_X3_PRO
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(HIDDEN, 1)
