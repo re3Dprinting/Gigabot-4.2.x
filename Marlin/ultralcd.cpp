@@ -4736,9 +4736,9 @@ void lcd_filament_runout_menu() {
           if (thermalManager.targetTooColdToExtrude(1))
             MENU_ITEM_P(submenu, msg1, lcd_temp_menu_e1_filament_change);
           else
-            MENU_ITEM_P(gcode, msg1, PSTR("G1 E300 F150"));
-            MENU_ITEM_P(gcode, msg2, PSTR("G1 E750 F150"));
-            MENU_ITEM_P(gcode, msg3, PSTR("G1 E1500 F150"));
+            MENU_ITEM_P(gcode, msg1, PSTR("G91\nG1 E300 F150"));
+            MENU_ITEM_P(gcode, msg2, PSTR("G91\nG1 E750 F150"));
+            MENU_ITEM_P(gcode, msg3, PSTR("G91\nG1 E1500 F150"));
         #endif // E_STEPPERS == 1
        
         END_MENU();

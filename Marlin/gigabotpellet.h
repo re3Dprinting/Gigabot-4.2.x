@@ -39,6 +39,11 @@
   #undef HOTEND_OFFSET_Y 
 #endif
 
+#if SYSTEM_SECTION == SUBSECTION(MACHINE, 5)
+  #undef X_MIN_POS
+  #define X_MIN_POS 33
+#endif
+
 #if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 2)
   #undef PREVENT_LENGTHY_EXTRUDE
 #endif
@@ -48,6 +53,8 @@
   #undef  HOMING_FEEDRATE_Z
   #define HOMING_FEEDRATE_XY (33*60)
   #define HOMING_FEEDRATE_Z  (3*60)
+  #define MANUAL_X_HOME_POS 33
+  #define MANUAL_Y_HOME_POS 610
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(TEMPERATURE, 1)
@@ -110,8 +117,10 @@
   #undef  Y_BED_SIZE
   #undef  Z_MAX_POS
 
-  #define X_BED_SIZE   565
+  #define X_BED_SIZE   560
   #define Y_BED_SIZE   600
+  #define X_MIN_POS    33
+  #define X_MAX_POS    610
   #define Z_MAX_POS    465
 
   #define ADVANCED_PAUSE_FEATURE
