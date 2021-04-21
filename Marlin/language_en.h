@@ -146,7 +146,7 @@
   #define MSG_PREHEAT_2_END                   MSG_PREHEAT_2 _UxGT(" End")
 #endif
 #ifndef MSG_PREHEAT_3
-  #define MSG_PREHEAT_3                       _UxGT("Preheat ABS")
+  #define MSG_PREHEAT_3                       _UxGT("Preheat PC")
 #endif
 #ifndef MSG_PREHEAT_3_N
   #define MSG_PREHEAT_3_N                     MSG_PREHEAT_3 _UxGT(" ")

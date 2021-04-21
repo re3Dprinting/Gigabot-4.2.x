@@ -1593,15 +1593,15 @@ void lcd_quick_feedback(const bool clear_buttons) {
   }
 
   #if HAS_TEMP_HOTEND
-    void lcd_preheat_m1_e0_only() { _lcd_preheat(0, 180, -1, lcd_preheat_fan_speed[0]); _lcd_preheat(1, 170, -1, lcd_preheat_fan_speed[0]); _lcd_preheat(2, 160, -1, lcd_preheat_fan_speed[0]);}
-    void lcd_preheat_m2_e0_only() { _lcd_preheat(0, 240, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 230, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 220, -1, lcd_preheat_fan_speed[1]);}
-	  void lcd_preheat_m3_e0_only() { _lcd_preheat(0, 230, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 220, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 210, -1, lcd_preheat_fan_speed[1]);}
-	  void lcd_preheat_m4_e0_only() { _lcd_preheat(0, 170, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 160, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 150, -1, lcd_preheat_fan_speed[1]);}
+    void lcd_preheat_m1_e0_only() { _lcd_preheat(0, 175, -1, lcd_preheat_fan_speed[0]); _lcd_preheat(1, 170, -1, lcd_preheat_fan_speed[0]); _lcd_preheat(2, 155, -1, lcd_preheat_fan_speed[0]);}
+    void lcd_preheat_m2_e0_only() { _lcd_preheat(0, 225, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 220, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 175, -1, lcd_preheat_fan_speed[1]);}
+    void lcd_preheat_m3_e0_only() { _lcd_preheat(0, 235, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 230, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 215, -1, lcd_preheat_fan_speed[1]);}
+	  void lcd_preheat_m4_e0_only() { _lcd_preheat(0, 110, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 100, -1, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 80, -1, lcd_preheat_fan_speed[1]);}
     #if HAS_HEATED_BED
-      void lcd_preheat_m1_e0() { _lcd_preheat(0, 180, 65, lcd_preheat_fan_speed[0]); _lcd_preheat(1, 170, 65, lcd_preheat_fan_speed[0]); _lcd_preheat(2, 160, 65, lcd_preheat_fan_speed[0]);}
-      void lcd_preheat_m2_e0() { _lcd_preheat(0, 240, 75, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 230, 75, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 220, 75, lcd_preheat_fan_speed[0]);}
-	    void lcd_preheat_m3_e0() { _lcd_preheat(0, 230, 65, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 225, 65, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 210, 65, lcd_preheat_fan_speed[0]);}
-	    void lcd_preheat_m4_e0() { _lcd_preheat(0, 170, 45, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 160, 45, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 150, 45, lcd_preheat_fan_speed[0]);}
+      void lcd_preheat_m1_e0() { _lcd_preheat(0, 175, 60, lcd_preheat_fan_speed[0]); _lcd_preheat(1, 170, 60, lcd_preheat_fan_speed[0]); _lcd_preheat(2, 155, 60, lcd_preheat_fan_speed[0]);}
+      void lcd_preheat_m2_e0() { _lcd_preheat(0, 225, 60, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 220, 60, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 175, 60, lcd_preheat_fan_speed[0]);}
+      void lcd_preheat_m3_e0() { _lcd_preheat(0, 235, 100, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 230, 100, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 215, 100, lcd_preheat_fan_speed[0]);}
+	    void lcd_preheat_m4_e0() { _lcd_preheat(0, 110, 45, lcd_preheat_fan_speed[1]); _lcd_preheat(1, 100, 45, lcd_preheat_fan_speed[1]); _lcd_preheat(2, 80, 45, lcd_preheat_fan_speed[0]);}
     #endif
   #endif
 
