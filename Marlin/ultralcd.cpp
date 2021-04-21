@@ -3999,8 +3999,8 @@ void lcd_quick_feedback(const bool clear_buttons) {
 	
     //Hotend Offset Control in LCD Menu
     #if EXTRUDERS > 1
-      MENU_ITEM_EDIT(float52, "T1X Offset", &hotend_offset[X_AXIS][1], -60, 60);
-      MENU_ITEM_EDIT(float52, "T1Y Offset", &hotend_offset[Y_AXIS][1], -5, 5);
+      //MENU_ITEM_EDIT(float52, "T1X Offset", &hotend_offset[X_AXIS][1], -60, 60);
+      //MENU_ITEM_EDIT(float52, "T1Y Offset", &hotend_offset[Y_AXIS][1], -5, 5);
     #endif // EXTRUDERS > 1
 
 
