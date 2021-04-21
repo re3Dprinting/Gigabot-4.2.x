@@ -8,6 +8,8 @@
 
 #undef MSG_GIGABOT3
 #define MSG_GIGABOT3 "Gigabot X"
+#undef GIGA_BUILD_VERSION
+#define GIGA_BUILD_VERSION "GBX 4.2.3 Reg"
 
 #if SYSTEM_SECTION == INFO
   #undef  STRING_CONFIG_H_AUTHOR
