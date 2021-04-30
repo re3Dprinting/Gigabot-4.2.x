@@ -41,7 +41,7 @@
 #endif
 
 #undef  SYSTEM_SECTION
-#define SYSTEM_SECTION AZTEEG_X3_PRO
+#define SYSTEM_SECTION SECTION(AZTEEG_X3_PRO)
 
 // DIGIPOT slave addresses
 #define DIGIPOT_I2C_ADDRESS_A 0x2C   // unshifted slave address for first DIGIPOT 0x2C (0x58 <- 0x2C << 1)

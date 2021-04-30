@@ -8780,6 +8780,20 @@ inline void gcode_M114() {
   }
 #endif
 
+#if ENABLED(RE3D_CODES)
+inline void gcode_R999() {
+  SERIAL_PROTOCOLPGM(MSG_RE3D_INFO_ID);
+  SERIAL_PROTOCOLLNPGM(MSG_GIGABOT3);
+  SERIAL_PROTOCOLPGM(MSG_RE3D_INFO_VERSION);
+  SERIAL_PROTOCOLLNPGM(GIGA_BUILD_VERSION);
+  SERIAL_PROTOCOLPGM(MSG_RE3D_INFO_BUILDDATE);
+  SERIAL_PROTOCOLLNPGM(STRING_DISTRIBUTION_DATE);
+  SERIAL_PROTOCOLPGM(MSG_RE3D_INFO_URL);
+  SERIAL_PROTOCOLLNPGM(WEBSITE_URL);
+ }
+
+#endif
+
 inline void gcode_M115() {
   SERIAL_PROTOCOLLNPGM(MSG_M115_REPORT);
 
@@ -8884,6 +8898,13 @@ inline void gcode_M115() {
     cap_line(PSTR("THERMAL_PROTECTION")
       #if ENABLED(THERMAL_PROTECTION_HOTENDS) && ENABLED(THERMAL_PROTECTION_BED)
         , true
+      #endif
+    );
+
+    // RE3D_CODES
+    cap_line(PSTR("RE3D_CODES")
+      #if ENABLED(RE3D_CODES)
+	     , true
       #endif
     );
 
@@ -12147,7 +12168,7 @@ inline void gcode_T(const uint8_t tmp_extruder) {
 void process_parsed_command() {
   KEEPALIVE_STATE(IN_HANDLER);
 
-  // Handle a known G, M, or T
+  // Handle a known G, M, T, or R
   switch (parser.command_letter) {
     case 'G': switch (parser.codenum) {
 
@@ -12600,6 +12621,14 @@ void process_parsed_command() {
 
     case 'T': gcode_T(parser.codenum); break;                     // T: Tool Select
 
+#if ENABLED(RE3D_CODES)
+    case 'R': switch (parser.codenum) {                           // R: Re:3D specific commands
+      case 999: gcode_R999(); break;
+      default: parser.unknown_command_error();
+    }
+    break;
+#endif
+    
     default: parser.unknown_command_error();
   }
 

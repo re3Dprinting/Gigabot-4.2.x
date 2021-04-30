@@ -77,15 +77,15 @@
 
   #define X_BED_SIZE   915
   #define Y_BED_SIZE   915
-  #define Z_MAX_POS    915
-  #define X_MIN_POS    -63
+  #define Z_MAX_POS    1020
+  #define X_MIN_POS    -57
 
 
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(HOMING, 3)
   #undef MANUAL_X_HOME_POS 
-  #define MANUAL_X_HOME_POS -63
+  #define MANUAL_X_HOME_POS -57
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(MOTION, 1)
@@ -97,13 +97,13 @@
   #undef  DEFAULT_XJERK
   #undef  DEFAULT_YJERK
 
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 106.67, 106.67, 4031.5, 937 }
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 66.667, 66.667, 4031.5, 937 }
   #define DEFAULT_MAX_FEEDRATE          { 100, 100, 4, 60 }
-  #define DEFAULT_MAX_ACCELERATION      { 1500, 1500, 100, 10000 }
+  #define DEFAULT_MAX_ACCELERATION      { 1200, 1200, 100, 10000 }
   #define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1500  
-  #define DEFAULT_XJERK                 5.0
-  #define DEFAULT_YJERK                 5.0
+  #define DEFAULT_XJERK                 15.0
+  #define DEFAULT_YJERK                 15.0
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(TEMPERATURE, 4)

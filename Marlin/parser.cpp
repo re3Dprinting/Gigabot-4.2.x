@@ -114,8 +114,17 @@ void GCodeParser::parse(char *p) {
     starpos[1] = '\0';
   }
 
-  // Bail if the letter is not G, M, or T
-  switch (letter) { case 'G': case 'M': case 'T': break; default: return; }
+  // Bail if the letter is not G, M, or T (or R for re:3D-specific codes)
+  switch (letter) {
+    case 'G':
+    case 'M':
+    case 'T':
+#if ENABLED(RE3D_CODES)
+    case 'R':
+#endif      
+      break;
+  default: return;
+  }
 
   // Skip spaces to get the numeric part
   while (*p == ' ') p++;

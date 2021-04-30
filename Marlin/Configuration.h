@@ -1,4 +1,4 @@
- /**
+/**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -71,10 +71,16 @@
 // example_configurations/SCARA and customize for your machine.
 //
 
-#undef  SYSTEM_SECTION
-#define SYSTEM_SECTION SECTION(INFO)
 
-// @section info
+
+//*****************************************************************************
+// Section (Info) begins here --->
+//
+
+#undef  SYSTEM_SECTION
+#define SYSTEM_SECTION SUBSECTION(INFO, 1)
+
+// @section info 1
 
 // User-specified version info of this build to display in [Pronterface, etc] terminal window during
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
@@ -104,10 +110,21 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Info) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Machine, 1) begins here --->
+//
+
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(MACHINE, 1)
 
-// @section machine
+// @section machine 1
 
 /**
  * Select the serial port on the board to use for communication with the host.
@@ -148,10 +165,21 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Machine, 1) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Extruder, 1) begins here --->
+//
+
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(EXTRUDER, 1)
 
-// @section extruder
+// @section extruder 1
 
 // This defines the number of extruders
 // :[1, 2, 3, 4, 5]
@@ -239,10 +267,21 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Extruder, 1) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Machine, 2) begins here --->
+//
+
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(MACHINE, 2)
 
-// @section machine
+// @section machine 2
 
 /**
  * Select your power supply here. Use 0 if you haven't connected the PS_ON_PIN
@@ -272,10 +311,21 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Machine, 2) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Temperature, 1) begins here --->
+//
+
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(TEMPERATURE, 1)
 
-// @section temperature
+// @section temperature 1
 
 //===========================================================================
 //============================= Thermal Settings ============================
@@ -466,10 +516,21 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Temperature, 1) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Extruder, 2) begins here --->
+//
+
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(EXTRUDER, 2)
 
-// @section extruder
+// @section extruder 2
 
 // This option prevents extrusion if the temperature is below EXTRUDE_MINTEMP.
 // It also enables the M302 command to set the minimum extrusion temperature
@@ -505,14 +566,25 @@
 
 #include SYSTEM_SETTINGS
 
-//===========================================================================
-//============================= Mechanical Settings =========================
-//===========================================================================
+//
+// <--- Section (Extruder, 2) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Machine, 3) begins here --->
+//
 
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(MACHINE, 3)
 
-// @section machine
+//===========================================================================
+//============================= Mechanical Settings =========================
+//===========================================================================
+
+// @section machine 3
 
 // Uncomment one of these options to enable CoreXY, CoreXZ, or CoreYZ kinematics
 // either in the usual order or reversed
@@ -525,14 +597,25 @@
 
 #include SYSTEM_SETTINGS
 
-//===========================================================================
-//============================== Endstop Settings ===========================
-//===========================================================================
+//
+// <--- Section (Machine, 3) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Homing, 1) begins here --->
+//
 
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(HOMING, 1)
 
-// @section homing
+// @section homing 1
+
+//===========================================================================
+//============================== Endstop Settings ===========================
+//===========================================================================
 
 // Specify here all the endstop connectors that are connected to any endstop or probe.
 // Almost all printers will be using one per axis. Probes will use one or more of the
@@ -572,14 +655,25 @@
 
 #include SYSTEM_SETTINGS
 
-//=============================================================================
-//============================== Movement Settings ============================
-//=============================================================================
+//
+// <--- Section (Homing, 1) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Motion, 1) begins here --->
+//
 
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(MOTION, 1)
 
-// @section motion
+//=============================================================================
+//============================== Movement Settings ============================
+//=============================================================================
+
+// @section motion 1
 
 /**
  * Default Settings
@@ -645,14 +739,25 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Motion, 1) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Probes) begins here --->
+//
+
+#undef  SYSTEM_SECTION
+#define SYSTEM_SECTION SUBSECTION(PROBES, 1)
+
 //===========================================================================
 //============================= Z Probe Options =============================
 //===========================================================================
 
-#undef  SYSTEM_SECTION
-#define SYSTEM_SECTION PROBES
-
-// @section probes
+// @section probes 1
 
 //
 // See http://marlinfw.org/docs/configuration/probes.html
@@ -697,7 +802,7 @@
  * The "Manual Probe" provides a means to do "Auto" Bed Leveling without a probe.
  * Use G29 repeatedly, adjusting the Z height at each point with movement commands
  * or (with LCD_BED_LEVELING) the LCD controller.
- */
+*/
 //#define PROBE_MANUALLY
 
 /**
@@ -829,20 +934,42 @@
 
 #include SYSTEM_SETTINGS
 
-// @section extruder
+//
+// <--- Section (Probes) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Extruder, 3) begins here --->
+//
 
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(EXTRUDER, 3)
+
+// @section extruder 3
 
 #define DISABLE_E false // For all extruders
 #define DISABLE_INACTIVE_EXTRUDER true // Keep only the active extruder enabled.
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Extruder, 3) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Machine, 4) begins here --->
+//
+
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(MACHINE, 4)
 
-// @section machine
+// @section machine 4
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
 #define INVERT_X_DIR false
@@ -854,10 +981,21 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Machine, 4) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Extruder, 4) begins here --->
+//
+
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(EXTRUDER, 4)
 
-// @section extruder
+// @section extruder 4
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
 #define INVERT_E0_DIR false
@@ -868,10 +1006,21 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Extruder, 4) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Homing, 2) begins here --->
+//
+
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(HOMING, 2)
 
-// @section homing
+// @section homing 2
 
 //#define NO_MOTION_BEFORE_HOMING  // Inhibit movement until all axes have been homed
 
@@ -888,10 +1037,21 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Homing, 2) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Machine, 5) begins here --->
+//
+
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(MACHINE, 5)
 
-// @section machine
+// @section machine 5
 
 // The size of the print bed
 #define X_BED_SIZE 200
@@ -952,14 +1112,25 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Machine, 5) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Calibrate) begins here --->
+//
+
+#undef  SYSTEM_SECTION
+#define SYSTEM_SECTION SUBSECTION(CALIBRATE, 1)
+
 //===========================================================================
 //=============================== Bed Leveling ==============================
 //===========================================================================
 
-#undef  SYSTEM_SECTION
-#define SYSTEM_SECTION CALIBRATE
-
-// @section calibrate
+// @section calibrate 1
 
 /**
  * Choose one of the options below to enable G29 Bed Leveling. The parameters
@@ -1143,10 +1314,21 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Calibrate) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Homing, 3) begins here --->
+//
+
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(HOMING, 3)
 
-// @section homing
+// @section homing 3
 
 // The center of the bed is at (X=0, Y=0)
 //#define BED_CENTER_AT_0_0
@@ -1174,15 +1356,26 @@
 #endif
 
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY (50*60)
+#define HOMING_FEEDRATE_XY (3000)
 #define HOMING_FEEDRATE_Z  (4*60)
 
 #include SYSTEM_SETTINGS
 
-#undef  SYSTEM_SECTION
-#define SYSTEM_SECTION CALIBRATE
+//
+// <--- Section (Homing, 3) ends here
+//*****************************************************************************
 
-// @section calibrate
+
+
+
+//*****************************************************************************
+// Section (Calibrate, 1) begins here --->
+//
+
+#undef  SYSTEM_SECTION
+#define SYSTEM_SECTION SUBSECTION(CALIBRATE, 2)
+
+// @section calibrate 1
 
 /**
  * Bed Skew Compensation
@@ -1241,14 +1434,25 @@
 
 #include SYSTEM_SETTINGS
 
-//=============================================================================
-//============================= Additional Features ===========================
-//=============================================================================
+//
+// <--- Section (Calibrate) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Extras, 1) begins here --->
+//
 
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(EXTRAS, 1)
 
-// @section extras
+//=============================================================================
+//============================= Additional Features ===========================
+//=============================================================================
+
+// @section extras 1
 
 //
 // EEPROM
@@ -1275,7 +1479,7 @@
 //
 // M100 Free Memory Watcher
 //
-#define M100_FREE_MEMORY_WATCHER    // Add M100 (Free Memory Watcher) to debug memory usage
+//#define M100_FREE_MEMORY_WATCHER    // Add M100 (Free Memory Watcher) to debug memory usage
 
 //
 // G20/G21 Inch mode support
@@ -1290,10 +1494,21 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Extras, 1) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Temperature, 2) begins here --->
+//
+
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(TEMPERATURE, 2)
 
-// @section temperature
+// @section temperature 2
 
 // Preheat Constants
 #define PREHEAT_1_TEMP_HOTEND 180
@@ -1419,14 +1634,26 @@
 
 #include SYSTEM_SETTINGS
 
+//
+// <--- Section (Temperature, 2) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (LCD) begins here --->
+//
+
+#undef  SYSTEM_SECTION
+#define SYSTEM_SECTION SUBSECTION(LCD, 1)
+
+
 //=============================================================================
 //============================= LCD and SD support ============================
 //=============================================================================
 
-#undef  SYSTEM_SECTION
-#define SYSTEM_SECTION LCD
-
-// @section lcd
+// @section lcd 1
 
 /**
  * LCD LANGUAGE
@@ -1821,14 +2048,25 @@
 
 #include SYSTEM_SETTINGS
 
-//=============================================================================
-//=============================== Extra Features ==============================
-//=============================================================================
+//
+// <--- Section (LCD) ends here
+//*****************************************************************************
+
+
+
+
+//*****************************************************************************
+// Section (Extra, 2) begins here --->
+//
 
 #undef  SYSTEM_SECTION
 #define SYSTEM_SECTION SUBSECTION(EXTRAS, 2)
 
-// @section extras
+//=============================================================================
+//=============================== Extra Features ==============================
+//=============================================================================
+
+// @section extras 2
 
 // Increase the FAN PWM frequency. Removes the PWM noise but increases heating in the FET/Arduino
 //#define FAST_PWM_FAN
@@ -1954,5 +2192,10 @@
 //#define DEACTIVATE_SERVOS_AFTER_MOVE
 
 #include SYSTEM_SETTINGS
+
+//
+// <--- Section (Extras, 2) ends here
+//*****************************************************************************
+
 
 #endif // CONFIGURATION_H

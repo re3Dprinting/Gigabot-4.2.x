@@ -3835,16 +3835,16 @@ void lcd_quick_feedback(const bool clear_buttons) {
     #if DISABLED(SLIM_LCD_MENUS)
 
       // M203 / M205 - Feedrate items
-      //MENU_ITEM(submenu, MSG_VELOCITY, lcd_control_motion_velocity_menu);
+      MENU_ITEM(submenu, MSG_VELOCITY, lcd_control_motion_velocity_menu);
 
       // M201 - Acceleration items
-      //MENU_ITEM(submenu, MSG_ACCELERATION, lcd_control_motion_acceleration_menu);
+      MENU_ITEM(submenu, MSG_ACCELERATION, lcd_control_motion_acceleration_menu);
 
       // M205 - Max Jerk
-      //MENU_ITEM(submenu, MSG_JERK, lcd_control_motion_jerk_menu);
+      MENU_ITEM(submenu, MSG_JERK, lcd_control_motion_jerk_menu);
 
       // M92 - Steps Per mm
-      //MENU_ITEM(submenu, MSG_STEPS_PER_MM, lcd_control_motion_steps_per_mm_menu);
+      MENU_ITEM(submenu, MSG_STEPS_PER_MM, lcd_control_motion_steps_per_mm_menu);
 
     #endif // !SLIM_LCD_MENUS
 	

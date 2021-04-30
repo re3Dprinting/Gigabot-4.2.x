@@ -219,6 +219,11 @@
 #define MSG_RE3D_FILAMENT_CHANGE_CONTINUE   "R306 Press button to continue."
 #define MSG_RE3D_FILAMENT_CHANGE_RESUME     "R307 Wait for print to resume."
 
+#define MSG_RE3D_INFO_ID		    "Printer: "
+#define MSG_RE3D_INFO_VERSION	            "Firmware: "
+#define MSG_RE3D_INFO_BUILDDATE		    "Build Date: "
+#define MSG_RE3D_INFO_URL		    "URL: "
+
 #define MSG_FILAMENT_CHANGE_HEAT            "Press button (or M108) to heat nozzle"
 #define MSG_FILAMENT_CHANGE_INSERT          "Insert filament and press button (or M108)"
 #define MSG_FILAMENT_CHANGE_HEAT_LCD        "Press button to heat nozzle"
