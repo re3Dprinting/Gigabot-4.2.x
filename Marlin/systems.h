@@ -23,7 +23,15 @@
 
 //#define SYSTEM gigabotxlt
 
-#define SYSTEM giga_terabot
+//#define SYSTEM giga_terabot
+
+//#define SYSTEM gigabotpellet
+
+//#define SYSTEM gigabotpelletxl
+
+//#define SYSTEM gigabotpelletxlt
+
+#define SYSTEM gigabotpellet_tera
 
 #define SYSTEM_SETTINGS     CONCAT(SYSTEM,.h)
 #define SYSTEM_SETTINGS_ADV CONCAT(SYSTEM,_adv.h)

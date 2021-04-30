@@ -131,7 +131,7 @@
   #define MSG_PREHEAT_1_SETTINGS              MSG_PREHEAT_1 _UxGT(" conf")
 #endif
 #ifndef MSG_PREHEAT_2
-  #define MSG_PREHEAT_2                       _UxGT("Preheat PC")
+  #define MSG_PREHEAT_2                       _UxGT("Preheat PET")
 #endif
 #ifndef MSG_PREHEAT_2_N
   #define MSG_PREHEAT_2_N                     MSG_PREHEAT_2 _UxGT(" ")
@@ -139,14 +139,41 @@
 #ifndef MSG_PREHEAT_2_ALL
   #define MSG_PREHEAT_2_ALL                   MSG_PREHEAT_2 _UxGT(" All")
 #endif
-#ifndef MSG_PREHEAT_2_END
-  #define MSG_PREHEAT_2_END                   MSG_PREHEAT_2 _UxGT(" End")
-#endif
 #ifndef MSG_PREHEAT_2_BEDONLY
   #define MSG_PREHEAT_2_BEDONLY               MSG_PREHEAT_2 _UxGT(" Bed")
 #endif
-#ifndef MSG_PREHEAT_2_SETTINGS
-  #define MSG_PREHEAT_2_SETTINGS              MSG_PREHEAT_2 _UxGT(" conf")
+#ifndef MSG_PREHEAT_2_END
+  #define MSG_PREHEAT_2_END                   MSG_PREHEAT_2 _UxGT(" End")
+#endif
+#ifndef MSG_PREHEAT_3
+  #define MSG_PREHEAT_3                       _UxGT("Preheat PC")
+#endif
+#ifndef MSG_PREHEAT_3_N
+  #define MSG_PREHEAT_3_N                     MSG_PREHEAT_3 _UxGT(" ")
+#endif
+#ifndef MSG_PREHEAT_3_ALL
+  #define MSG_PREHEAT_3_ALL                   MSG_PREHEAT_3 _UxGT(" All")
+#endif
+#ifndef MSG_PREHEAT_3_BEDONLY
+  #define MSG_PREHEAT_3_BEDONLY               MSG_PREHEAT_3 _UxGT(" Bed")
+#endif
+#ifndef MSG_PREHEAT_3_SETTINGS
+  #define MSG_PREHEAT_3_SETTINGS              MSG_PREHEAT_3 _UxGT(" conf")
+#endif
+#ifndef MSG_PREHEAT_4
+  #define MSG_PREHEAT_4                       _UxGT("Preheat TPU")
+#endif
+#ifndef MSG_PREHEAT_4_N
+  #define MSG_PREHEAT_4_N                     MSG_PREHEAT_4 _UxGT(" ")
+#endif
+#ifndef MSG_PREHEAT_4_ALL
+  #define MSG_PREHEAT_4_ALL                   MSG_PREHEAT_4 _UxGT(" All")
+#endif
+#ifndef MSG_PREHEAT_4_BEDONLY
+  #define MSG_PREHEAT_4_BEDONLY               MSG_PREHEAT_4 _UxGT(" Bed")
+#endif
+#ifndef MSG_PREHEAT_4_SETTINGS
+  #define MSG_PREHEAT_4_SETTINGS              MSG_PREHEAT_4 _UxGT(" conf")
 #endif
 #ifndef MSG_COOLDOWN
   #define MSG_COOLDOWN                        _UxGT("Cooldown")
@@ -479,9 +506,6 @@
 #endif
 #ifndef MSG_CONTROL
   #define MSG_CONTROL                         _UxGT("Control")
-#endif
-#ifndef MSG_DUALEXTR
-  #define MSG_DUALEXTR                         _UxGT("Dual Extruder Settings")
 #endif
 #ifndef MSG_MIN
   #define MSG_MIN                             _UxGT(" ") LCD_STR_THERMOMETER _UxGT(" Min")

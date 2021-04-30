@@ -948,12 +948,20 @@ float Temperature::analog2temp(const int raw, const uint8_t e) {
     return PGM_RD_W((*tt)[heater_ttbllen_map[e] - 1][1]); // Overflow: Return last value in the table
   }
 
+  #if ENABLED(HEATER_2_USES_AD8495)
+    if (e == 2){
+      return (raw * AD8495_FORMULA);
+    }
+  #endif
+
   // Thermocouple with amplifier ADC interface
   return (raw *
-    #if HEATER_USES_AD8495
-      660.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD8495_GAIN) + TEMP_SENSOR_AD8495_OFFSET
-    #elif HEATER_USES_AD595
+
+    #if HEATER_USES_AD595
       5.0 * 100.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD595_GAIN) + TEMP_SENSOR_AD595_OFFSET
+    #elif HEATER_USES_AD8495
+      //660.0 / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD8495_GAIN) + TEMP_SENSOR_AD8495_OFFSET
+      AD8495_FORMULA
     #else
       0
     #endif
@@ -1134,12 +1142,15 @@ void Temperature::init() {
 
   #if HAS_HEATER_0
     SET_OUTPUT(HEATER_0_PIN);
-  #endif
-  #if HAS_HEATER_1
     SET_OUTPUT(HEATER_1_PIN);
   #endif
+  #if HAS_HEATER_1
+    SET_OUTPUT(HEATER_4_PIN); //heater band 2 for GBX on heaters 4&5
+    SET_OUTPUT(HEATER_5_PIN);
+  #endif
   #if HAS_HEATER_2
-    SET_OUTPUT(HEATER_2_PIN);
+    SET_OUTPUT(HEATER_6_PIN);
+    SET_OUTPUT(HEATER_7_PIN);
   #endif
   #if HAS_HEATER_3
     SET_OUTPUT(HEATER_3_PIN);

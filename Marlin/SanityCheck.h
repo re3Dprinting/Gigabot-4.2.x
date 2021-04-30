@@ -1135,8 +1135,10 @@ static_assert(X_MAX_LENGTH >= X_BED_SIZE && Y_MAX_LENGTH >= Y_BED_SIZE,
  * Basic 2-nozzle duplication mode
  */
 #if ENABLED(DUAL_NOZZLE_DUPLICATION_MODE)
-  #if HOTENDS != 2
-    #error "DUAL_NOZZLE_DUPLICATION_MODE requires exactly 2 hotends."
+  //#if HOTENDS != 2
+    //#error "DUAL_NOZZLE_DUPLICATION_MODE requires exactly 2 hotends."
+  #if !(HOTENDS == 2 || HOTENDS == 3)
+    #error "DUAL_NOZZLE_DUPLICATION_MODE requires exactly 2 or 3 hotends."
   #elif ENABLED(DUAL_X_CARRIAGE)
     #error "DUAL_NOZZLE_DUPLICATION_MODE is incompatible with DUAL_X_CARRIAGE."
   #elif ENABLED(SINGLENOZZLE)
