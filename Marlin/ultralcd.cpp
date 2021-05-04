@@ -4732,13 +4732,13 @@ void lcd_filament_runout_menu() {
           if (thermalManager.targetTooColdToExtrude(0))
             MENU_ITEM_P(submenu, msg0, lcd_temp_menu_e0_filament_change);
           else
-            MENU_ITEM_P(gcode, msg0, PSTR("G91\nG0 Z0.1\nM92 E55\nG1 E30 F1360"));
+            MENU_ITEM_P(gcode, msg0, PSTR("G91\nG0 Z0.1\nM92 E55\nG1 E30 F500"));
           if (thermalManager.targetTooColdToExtrude(1))
             MENU_ITEM_P(submenu, msg1, lcd_temp_menu_e1_filament_change);
           else
-            MENU_ITEM_P(gcode, msg1, PSTR("G91\nG0 Z0.1\nM92 E55\nG1 E300 F1360"));
-            MENU_ITEM_P(gcode, msg2, PSTR("G91\nG0 Z0.1\nM92 E55\nG1 E750 F1360"));
-            MENU_ITEM_P(gcode, msg3, PSTR("G91\nG0 Z0.1\nM92 E55\nG1 E1500 F1360"));
+            MENU_ITEM_P(gcode, msg1, PSTR("G91\nG0 Z0.1\nM92 E55\nG1 E1000 F500"));
+            MENU_ITEM_P(gcode, msg2, PSTR("G91\nG0 Z0.1\nM92 E55\nG1 E2500 F500"));
+            MENU_ITEM_P(gcode, msg3, PSTR("G91\nG0 Z0.1\nM92 E55\nG1 E5000 F500"));
         #endif // E_STEPPERS == 1
        
         END_MENU();
