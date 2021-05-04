@@ -1,4 +1,4 @@
-// gigabotxl.h
+// gigabotpellet.h
 //
 // This include file is intended to isolate configuration settings for Marlin by 
 // separating them into sections
