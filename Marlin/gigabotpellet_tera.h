@@ -42,8 +42,8 @@
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(MACHINE, 5)
-  #undef X_MIN_POS
-  #define X_MIN_POS 33
+  //#undef X_MIN_POS
+  //#define X_MIN_POS 33
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 2)
