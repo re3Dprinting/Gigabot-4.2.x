@@ -42,15 +42,15 @@
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(MACHINE, 5)
-  //#undef X_MIN_POS
-  //#define X_MIN_POS 33
 
+  #undef  X_BED_SIZE
   #undef  Y_BED_SIZE
   #undef  Z_MAX_POS
   #undef  X_MIN_POS
 
+  #define X_BED_SIZE   892
   #define Y_BED_SIZE   908
-  #define Z_MAX_POS    870
+  #define Z_MAX_POS    830
   #define X_MIN_POS    0
 #endif
 
@@ -62,10 +62,10 @@
   #undef  HOMING_FEEDRATE_XY
   #undef  HOMING_FEEDRATE_Z
   #undef  MANUAL_X_HOME_POS
+  
   #define HOMING_FEEDRATE_XY (33*60)
   #define HOMING_FEEDRATE_Z  (3*60)
-  #define MANUAL_X_HOME_POS 33
-  //#define MANUAL_Y_HOME_POS 610
+  #define MANUAL_X_HOME_POS  0
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(TEMPERATURE, 1)
