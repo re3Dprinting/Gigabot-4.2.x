@@ -55,9 +55,9 @@
 
   #define X_BED_SIZE   780
   #define Y_BED_SIZE   780
-  #define Z_MAX_POS    1888
-  #define X_MIN_POS    0
-  #define Y_MIN_POS    0
+  #define Z_MAX_POS    1600
+  #define X_MIN_POS    -87
+  #define Y_MIN_POS    -60
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(HOMING, 3)
