@@ -218,3 +218,11 @@
 #define MSG_NOZZLE                          _UxGT("Heater Band")
 #undef MSG_FILAMENT_CHANGE_NOZZLE
 #define MSG_FILAMENT_CHANGE_NOZZLE          _UxGT("  Heater Band: ")
+
+#undef MSG_N1
+#undef MSG_N2
+#undef MSG_N3
+
+#define MSG_N1 0
+#define MSG_N2 1
+#define MSG_N3 2
