@@ -826,9 +826,9 @@
    */
   #define WRITE_HEATER_0P(v) WRITE(HEATER_0_PIN, v)
   #if HOTENDS > 1 || ENABLED(HEATERS_PARALLEL)
-    #define WRITE_HEATER_1(v) WRITE(HEATER_4_PIN, v)
+    #define WRITE_HEATER_1(v) WRITE(HEATER_1_PIN, v)
     #if HOTENDS > 2
-      #define WRITE_HEATER_2(v) WRITE(HEATER_6_PIN, v)
+      #define WRITE_HEATER_2(v) WRITE(HEATER_2_PIN, v)
       #if HOTENDS > 3
         #define WRITE_HEATER_3(v) WRITE(HEATER_3_PIN, v)
         #if HOTENDS > 4
