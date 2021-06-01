@@ -151,13 +151,20 @@
   #undef  TEMP_1_PIN
   #undef  TEMP_2_PIN 
 
-  #define HEATER_BED_PIN      8
-  #define FAN_PIN             17 // Part Cooling System
+  //Define heater pins
+  #undef  HEATER_1_PIN
+  #undef  HEATER_2_PIN
 
-  #define TEMP_0_PIN          4   // Analog Input
-  #define TEMP_1_PIN          5   // Analog Input
-  #define TEMP_2_PIN   		    9   // Analog Input (D63)
-  #define TEMP_BED_PIN        3   // Analog Input (D57)
+  #define HEATER_BED_PIN  8
+  #define FAN_PIN         17 // Part Cooling System
+
+  #define TEMP_0_PIN      4   // Analog Input
+  #define TEMP_1_PIN      5   // Analog Input
+  #define TEMP_2_PIN      9   // Analog Input (D63)
+  #define TEMP_BED_PIN    3   // Analog Input (D57)
+
+  #define HEATER_1_PIN    4   // HE5 on board
+  #define HEATER_2_PIN    6   // HE7 on board
 #endif
 
 #undef  E0_AUTO_FAN_PIN 
@@ -173,14 +180,6 @@
 #define CHAMBER_AUTO_FAN_PIN -1
 #define EXTRUDER_AUTO_FAN_TEMPERATURE 18
 #define EXTRUDER_AUTO_FAN_SPEED   255  // == full speed
-
-
-//Define heater pins
-#undef  HEATER_1_PIN
-#undef  HEATER_2_PIN
-
-#define HEATER_1_PIN 4
-#define HEATER_2_PIN 6
 
 
 //Menu Text for Pellet Extruder
