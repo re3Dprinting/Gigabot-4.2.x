@@ -174,21 +174,13 @@
 #define EXTRUDER_AUTO_FAN_TEMPERATURE 18
 #define EXTRUDER_AUTO_FAN_SPEED   255  // == full speed
 
-//Conditional_post.h
-//Define heater pins
-#if HOTENDS > 1 || ENABLED(HEATERS_PARALLEL)
-  #undef  WRITE_HEATER_1(v)
-  
-  #define WRITE_HEATER_1(v) WRITE(HEATER_4_PIN, v)
-  
-  #if HOTENDS > 2
-    #undef  WRITE_HEATER_2(v)
-    
-    #define WRITE_HEATER_2(v) WRITE(HEATER_6_PIN, v)
-    
-  #endif // HOTENDS > 2
-#endif // HOTENDS > 1
 
+//Define heater pins
+#undef  HEATER_1_PIN
+#undef  HEATER_2_PIN
+
+#define HEATER_1_PIN 4
+#define HEATER_2_PIN 6
 
 
 //Menu Text for Pellet Extruder
