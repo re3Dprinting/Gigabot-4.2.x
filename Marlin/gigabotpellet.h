@@ -190,7 +190,7 @@
 #define MSG_B5 "B5"
 
 #ifndef MSG_PELLETCHANGE
-  #define MSG_PELLETCHANGE                    _UxGT("Change Pellet")
+  #define MSG_PELLETCHANGE                    _UxGT("Purge")
 #endif
 #ifndef MSG_PRIMENOZZLE
   #define MSG_PRIMENOZZLE                     _UxGT("Prime Nozzle")
