@@ -212,6 +212,9 @@
 #undef MSG_FILAMENT_CHANGE_NOZZLE
 #define MSG_FILAMENT_CHANGE_NOZZLE          _UxGT("  Heater Band: ")
 
+#undef  REMOVE_DE_CALIBRATION_OFFSETS
+#define REMOVE_DE_CALIBRATION_OFFSETS
+
 #undef MSG_N1
 #undef MSG_N2
 #undef MSG_N3
