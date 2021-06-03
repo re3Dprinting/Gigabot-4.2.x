@@ -95,15 +95,17 @@
   #undef  DEFAULT_MAX_ACCELERATION
   #undef  DEFAULT_ACCELERATION
   #undef  DEFAULT_RETRACT_ACCELERATION
+  #undef  DEFAULT_TRAVEL_ACCELERATION
   #undef  DEFAULT_XJERK
   #undef  DEFAULT_YJERK
 
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 106.67, 118.52, 4031.5, 55 }
   #define DEFAULT_MAX_FEEDRATE          { 150, 150, 4, 500 }
-  #define DEFAULT_MAX_ACCELERATION      { 900, 900, 100, 10000 }
+  #define DEFAULT_MAX_ACCELERATION      { 1000, 1000, 100, 10000 }
   #define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1500  
-  #define DEFAULT_XJERK                 5.0
+  #define DEFAULT_TRAVEL_ACCELERATION   1000
+  #define DEFAULT_XJERK                 15.0
   #define DEFAULT_YJERK                 9.0
 #endif
 
