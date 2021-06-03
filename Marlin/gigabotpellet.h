@@ -85,7 +85,7 @@
 #if SYSTEM_SECTION == SUBSECTION(HOMING, 4)
   #undef DUAL_NOZZLE_DUPLICATION_MODE
   #undef MANUAL_FEEDRATE
-  #define MANUAL_FEEDRATE {50*60, 50*60, 4*60, 100}
+  #define MANUAL_FEEDRATE {50*60, 50*60, 4*60, 500}
   #define DUAL_NOZZLE_DUPLICATION_MODE
 #endif
 
@@ -98,8 +98,8 @@
   #undef  DEFAULT_XJERK
   #undef  DEFAULT_YJERK
 
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 106.67, 118.52, 4031.5, 600 }
-  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 4, 60 }
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 106.67, 118.52, 4031.5, 55 }
+  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 4, 500 }
   #define DEFAULT_MAX_ACCELERATION      { 900, 900, 100, 10000 }
   #define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1500  
