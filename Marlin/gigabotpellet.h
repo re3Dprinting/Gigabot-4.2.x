@@ -37,8 +37,11 @@
 #if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 1)
   #undef  EXTRUDERS
   #define EXTRUDERS 3
-  #undef HOTEND_OFFSET_X
-  #undef HOTEND_OFFSET_Y 
+  #undef  HOTEND_OFFSET_X
+  #undef  HOTEND_OFFSET_Y
+
+  #undef  E_MANUAL
+  #define E_MANUAL 1
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(MACHINE, 5)
